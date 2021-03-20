@@ -20,53 +20,77 @@ public class Swerve {
   private PIDController anglePID;
   private PIDController drivePID;
   private CANCoder angleEncoder;
-      public Swerve(int motorIdDrive,int motorIdAngle,int encoderID, PIDController pidA, PIDController pidD){
+    public Swerve(int motorIdDrive,int motorIdAngle,int encoderID, PIDController pidA, PIDController pidD){
         //TODO ADD OFFSET OF THE MOTOR SO ITS NOT ANNOYING
         angleEncoder = new CANCoder(encoderID);
         drivePID = pidA;
         anglePID = pidD;
         driveMotor = new CANSparkMax(motorIdDrive, MotorType.kBrushless);
         angleMotor = new CANSparkMax(motorIdAngle, MotorType.kBrushless);
-      }
-      public void setSpeed(double driveSpeed, double angleSpeed){
+    }
+
+    public void setSpeed(double driveSpeed, double angleSpeed){
         driveMotor.set(driveSpeed);
         angleMotor.set(angleSpeed);
     }
-      public void setAngleSpeed(double angleSpeed){
+
+    public void setAngleSpeed(double angleSpeed){
         angleMotor.set(angleSpeed);
-      }
-      public void setDriveSpeed(double driveSpeed){
+    }
+
+    public void setDriveSpeed(double driveSpeed){
         driveMotor.set(driveSpeed);
-      }
+    }
+
     public double drivePIDCalc(double rate){
         double calcDriveSpeed = 0;
         //angle
         return calcDriveSpeed;
-      }
-      public double angleOffsetAnglePID(double angle, double offSet){
+    }
+
+    public double angleOffsetAnglePID(double angle, double offSet){
         return anglePIDCalcABS(angle);
-      }
-      public double angleOffsetDrivePID(double angle, double offSet){
+    }
+
+    public double angleOffsetDrivePID(double angle, double offSet){
         return anglePIDCalcABS(angle);
-      }
-      public double anglePIDCalc(double angle){
+    }
+
+    public double anglePIDCalc(double angle){
         double calcAngleSpeed = 0;
         anglePID.calculate(angleEncoder.getPosition(), angle);
         return calcAngleSpeed;
-      }
-      public double anglePIDCalcABS(double angle){
-        if(angle == 42069){
-          return 0;
-        }else{
+    }
+
+    public double anglePIDCalcABS(double angle){
         double calcAngleSpeed = 0;
-        calcAngleSpeed = anglePID.calculate(angleEncoder.getAbsolutePosition(), angle);
-        return calcAngleSpeed;
+        
+        if(angle != 42069) {
+            double curPos = angleEncoder.getAbsolutePosition();
+            double posAngle = angle + 360;
+            double negAngle = angle - 360;
+            
+            double curError = Math.abs(curPos - angle);
+            double posError = Math.abs(curPos - posAngle);
+            double negError = Math.abs(curPos - negAngle);
+
+            if(curError < posError && curError < negError) {
+                calcAngleSpeed = anglePID.calculate(angleEncoder.getAbsolutePosition(), angle);
+            } else if(posError < curError && posError < negError) {
+                calcAngleSpeed = anglePID.calculate(angleEncoder.getAbsolutePosition(), posAngle);
+            } else {
+                calcAngleSpeed = anglePID.calculate(angleEncoder.getAbsolutePosition(), negAngle);
+            }
         }
-      }
-      public void resetEncoder(){
+        
+        return calcAngleSpeed;
+    }
+
+    public void resetEncoder(){
         angleEncoder.setPosition(0);
-      }
-      public double getEncoder(){
+    }
+
+    public double getEncoder(){
         return angleEncoder.getAbsolutePosition();
-      }
+    }
 }
