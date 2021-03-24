@@ -49,6 +49,8 @@ public class OI extends SubsystemBase {
         System.out.println(drive.frontRight.getEncoder());
     }
     private void driveTest(){
+        drive.setVector(70, Math.sqrt(Math.pow(Math.abs(joy1.getRawAxis(0)), 2)+Math.pow(Math.abs(joy1.getRawAxis(1)), 2)), 0);
+
         drive.setVector(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(joy1.getRawAxis(0)), 2)+Math.pow(Math.abs(joy1.getRawAxis(1)), 2)), joy1.getRawAxis(4));
         //drive.backLeft.setAngleSpeed(drive.backLeft.anglePIDCalcABS(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1))));
         //drive.backLeft.setDriveSpeed(Math.sqrt(Math.pow(joy1.getRawAxis(0), 2)+Math.pow(joy1.getRawAxis(1), 2))/4);
@@ -83,5 +85,10 @@ public class OI extends SubsystemBase {
         //testMotor();
         driveTest();
         drive.periodic();
+        //drive.backLeft.setSpeed(0.2, 0.2);
+        //drive.backRight.setSpeed(0.2, 0.2);
+        //System.out.println(drive.backRight.getEncoder() + "br");
+        //System.out.println(drive.backLeft.getEncoder() + "bl");
+
     }
 }

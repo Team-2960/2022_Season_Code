@@ -91,11 +91,23 @@ public class Drive extends SubsystemBase {
         setSwerve(angleVX, angleVY, rotationVectorX*180/Math.PI);
       } 
       public void periodic(){
+        //System.out.println(frontLeftSwerveSpeed/300);
+        //+180+Constants.flHome
+        System.out.println(frontLeft.getEncoder() + "ENC");
+        System.out.println(frontLeftSwerveAngle+180+Constants.flHome);
+        /*System.out.println(backRight.getEncoder() + "enc");
+        System.out.println(backRightSwerveAngle);
+        System.out.println(backRightSwerveSpeed);
+        System.out.println(backLeftSwerveAngle);
         System.out.println(backLeftSwerveSpeed);
-        frontLeft.setSpeed(frontLeftSwerveSpeed/4000, frontLeft.anglePIDCalcABS(frontLeftSwerveAngle+180));
-        frontRight.setSpeed(frontRightSwerveSpeed/4000, frontRight.anglePIDCalcABS(frontRightSwerveAngle+180));
-        backLeft.setSpeed(backLeftSwerveSpeed/4000, backLeft.anglePIDCalcABS(backLeftSwerveAngle+180));
-        backRight.setSpeed(backRightSwerveSpeed/4000, backRight.anglePIDCalcABS(backRightSwerveAngle+180));
+        System.out.println(frontRightSwerveAngle);
+        System.out.println(frontRightSwerveSpeed);
+        System.out.println(frontLeftSwerveAngle);
+        System.out.println(frontLeftSwerveSpeed);*/
+        frontLeft.setSpeed(frontLeftSwerveSpeed/300, frontLeft.anglePIDCalcABS(frontLeftSwerveAngle+180+Constants.flHome));
+        frontRight.setSpeed(frontRightSwerveSpeed/300, frontRight.anglePIDCalcABS(frontRightSwerveAngle+180+Constants.frHome));
+        backLeft.setSpeed(backLeftSwerveSpeed/300, backLeft.anglePIDCalcABS(backLeftSwerveAngle+180+Constants.blHome));
+        backRight.setSpeed(backRightSwerveSpeed/300, backRight.anglePIDCalcABS(backRightSwerveAngle+180+Constants.brHome));
 
       }
 
