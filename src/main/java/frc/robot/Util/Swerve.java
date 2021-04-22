@@ -20,9 +20,10 @@ public class Swerve {
   private PIDController anglePID;
   private PIDController drivePID;
   private CANCoder angleEncoder;
-    public Swerve(int motorIdDrive,int motorIdAngle,int encoderID, PIDController pidA, PIDController pidD){
+    public Swerve(int motorIdDrive,int motorIdAngle,int encoderID, PIDController pidA, PIDController pidD, double offSet){
         //TODO ADD OFFSET OF THE MOTOR SO ITS NOT ANNOYING
         angleEncoder = new CANCoder(encoderID);
+        angleEncoder.configMagnetOffset(offSet);
         drivePID = pidA;
         anglePID = pidD;
         driveMotor = new CANSparkMax(motorIdDrive, MotorType.kBrushless);
