@@ -9,6 +9,12 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Util.Swerve;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
@@ -48,6 +54,7 @@ public class Drive extends SubsystemBase {
     public double driverIn;
     public double coEff;
     public AnalogGyro gyro;
+    public SwerveDriveOdometry m_odometry;
     public static Drive get_Instance(){
     
         if(drive == null){
@@ -57,6 +64,7 @@ public class Drive extends SubsystemBase {
       }
       public Drive(){
          navX = new AHRS(SPI.Port.kMXP);
+         navX.resetDisplacement();
          gyro = new AnalogGyro(0);
          PIDDFL = new PIDController(Constants.dPFL, Constants.dIFL, Constants.dDFL);
          PIDAFL = new PIDController(Constants.aPFL, Constants.aIFL, Constants.aDFL);
@@ -70,7 +78,17 @@ public class Drive extends SubsystemBase {
          frontRight = new Swerve(Constants.motorIdDriveFrontRight, Constants.motorIdAngleFrontRight, Constants.encoderIdFrontRight,PIDDFR, PIDAFR, Constants.frHome);
          backRight = new Swerve(Constants.motorIdDriveBackRight, Constants.motorIdAngleBackRight, Constants.encoderIdBackRight, PIDDBR, PIDABR, Constants.brHome);
          backLeft = new Swerve(Constants.motorIdDriveBackLeft, Constants.motorIdAngleBackLeft, Constants.encoderIdBackLeft, PIDDBL, PIDABL, Constants.blHome);
+         Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
+         Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
+         Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
+        Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
+        SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+          m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
+        );
+       m_odometry = new SwerveDriveOdometry(m_kinematics,
+        new Rotation2d(gyro.getAngle()), new Pose2d(0, 0, new Rotation2d()));  
       }
+
       public void homeSwerve(){
         drive.setVector(180, 0, 0);
       }
@@ -120,6 +138,11 @@ public class Drive extends SubsystemBase {
         offset = 0;
         offset2=0;
       }
+      double xDis;
+      public void xDisplacement(){
+        xDis = xDis + 0.05 *navX.getVelocityX();
+
+      }
       public void periodic(){
         //System.out.println(frontLeftSwerveSpeed/300);
         //+180+Constants.flHome
@@ -137,6 +160,15 @@ public class Drive extends SubsystemBase {
         System.out.println(frontRightSwerveSpeed);
         System.out.println(frontLeftSwerveAngle);
         System.out.println(frontLeftSwerveSpeed);*/
+          // Get my gyro angle. We are negating the value because gyros return positive
+         // values as the robot turns clockwise. This is not standard convention that is
+        // used by the WPILib classes.
+        // Update the pose
+
+        m_odometry.update(Rotation2d.fromDegrees(gyro.getAngle()), frontLeft.getState(), frontRight.getState(), backLeft.getState(),backRight.getState());
+      SmartDashboard.putNumber("x", m_odometry.getPoseMeters().getTranslation().getX());
+        SmartDashboard.putNumber("y" , (m_odometry.getPoseMeters().getTranslation().getY()));
+
         frontLeft.setSpeed(frontLeftSwerveSpeed/75, frontLeft.anglePIDCalcABS(frontLeftSwerveAngle+180));
         frontRight.setSpeed(frontRightSwerveSpeed/75, frontRight.anglePIDCalcABS(frontRightSwerveAngle+180));
         backLeft.setSpeed(backLeftSwerveSpeed/75, backLeft.anglePIDCalcABS(backLeftSwerveAngle+180));

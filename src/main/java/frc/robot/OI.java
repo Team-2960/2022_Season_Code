@@ -6,6 +6,7 @@ import frc.robot.SubSystems.Hood;
 import frc.robot.SubSystems.Index;
 import frc.robot.SubSystems.Intake;
 import frc.robot.SubSystems.Shooter;
+import frc.robot.SubSystems.Lime;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -21,11 +22,13 @@ public class OI extends SubsystemBase {
     public Hood hood;
     private Index index;
     public Joystick joy1;
+    public Lime lime;
 
     public OI(){
         //camera = Camera.get_Instance();
         drive = Drive.get_Instance();
         joy1 = new Joystick(Constants.joy1);
+        lime = new Lime();
 
 
     }
@@ -94,9 +97,10 @@ public class OI extends SubsystemBase {
         //testMotor();
         if(joy1.getRawButton(1)){
             driveTest();
-        }else if(Math.sqrt(Math.pow(Math.abs(joy1.getRawAxis(0)), 2)+Math.pow(Math.abs(joy1.getRawAxis(1)), 2)) < 0.05){
-            drive.setVector(90, 0, 0);
-
+        }//else if(Math.sqrt(Math.pow(Math.abs(joy1.getRawAxis(0)), 2)+Math.pow(Math.abs(joy1.getRawAxis(1)), 2)) < 0.05 && Math.abs(joy1.getRawAxis(4))<0.05){
+           // drive.setVector(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1)), 0, 0);
+        else if(joy1.getRawButton(2)){
+            drive.setVector(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(joy1.getRawAxis(0)), 2)+Math.pow(Math.abs(joy1.getRawAxis(1)), 2)), lime.getHorOffset()/40);
         }
         else{
             drive.setVector(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(joy1.getRawAxis(0)), 2)+Math.pow(Math.abs(joy1.getRawAxis(1)), 2)), joy1.getRawAxis(4));

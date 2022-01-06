@@ -7,7 +7,11 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 //PID
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 //SENSORS
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 
 import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -20,6 +24,9 @@ public class Swerve {
   private PIDController anglePID;
   private PIDController drivePID;
   private CANCoder angleEncoder;
+  private Translation2d translation2d;
+  private Rotation2d rotation2d;
+  private Pose2d pose2d;
     public Swerve(int motorIdDrive,int motorIdAngle,int encoderID, PIDController pidA, PIDController pidD, double offSet){
         //TODO ADD OFFSET OF THE MOTOR SO ITS NOT ANNOYING
         angleEncoder = new CANCoder(encoderID);
@@ -42,7 +49,6 @@ public class Swerve {
     public void setDriveSpeed(double driveSpeed){
         driveMotor.set(driveSpeed);
     }
-
     public double drivePIDCalc(double rate){
         double calcDriveSpeed = 0;
         //angle
@@ -93,5 +99,8 @@ public class Swerve {
 
     public double getEncoder(){
         return angleEncoder.getAbsolutePosition();
+    }
+    public SwerveModuleState getState(){
+        return new SwerveModuleState(driveMotor.getEncoder().getVelocity()*0.31918645197/(60*6.86), new Rotation2d(getEncoder()*Math.PI/180));
     }
 }
