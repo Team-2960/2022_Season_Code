@@ -6,19 +6,29 @@ import edu.wpi.first.wpiutil.math.MathUtil;
 public class Constants{
     public double robotWidth = 0;
     public double robotLength = 0;
-    public static int joy1 = 1;
-    public static int motorIdDriveFrontLeft = 5;
-    public static int motorIdAngleFrontLeft = 6;
-    public static int motorIdDriveFrontRight = 7;
-    public static int motorIdAngleFrontRight = 8;
-    public static int motorIdDriveBackRight = 1;
-    public static int motorIdAngleBackRight = 2;
-    public static int motorIdDriveBackLeft = 3;
-    public static int motorIdAngleBackLeft = 4;
-    public static int encoderIdFrontLeft = 12;
-    public static int encoderIdFrontRight = 11;
-    public static int encoderIdBackLeft = 9;
-    public static int encoderIdBackRight = 10;
+
+
+    //OI Constants
+    public static int driverControl = 1;
+    public static int operatorControl =2;
+  
+
+    //Shooter Constants
+    public static double uWP = .3;
+    public static double uWI = 0;
+    public static double uWD = 0;
+    public static double lWP = .3;
+    public static double lWI = 0;
+    public static double lWD = 0;
+
+    public static double uTarmacRPM = 1;
+    public static double lTarmacRPM = 1;
+
+
+    //Drive Constants
+    public static double aRP = .3;
+    public static double aRI = 0;
+    public static double aRD = 0;
     public static double dPFL = 1;
     public static double dIFL = 1;
     public static double dDFL = 1;
@@ -47,7 +57,21 @@ public class Constants{
     public static double frHome = -269.19;
     public static double blHome = -73.81;
     public static double brHome = -157.03;
+
+    public static int motorIdDriveFrontLeft = 5;
+    public static int motorIdAngleFrontLeft = 6;
+    public static int motorIdDriveFrontRight = 7;
+    public static int motorIdAngleFrontRight = 8;
+    public static int motorIdDriveBackRight = 1;
+    public static int motorIdAngleBackRight = 2;
+    public static int motorIdDriveBackLeft = 3;
+    public static int motorIdAngleBackLeft = 4;
+    public static int encoderIdFrontLeft = 12;
+    public static int encoderIdFrontRight = 11;
+    public static int encoderIdBackLeft = 9;
+    public static int encoderIdBackRight = 10;
     //ADD PIDs FOR SWERVE
+
     //CAMERA CONSTANTS
     public final static int cameraPort = 0;
     public final static int cWidth = 640;
@@ -56,4 +80,30 @@ public class Constants{
     public final static double verticalViewAngle = 20.55;
     public final static double deg_per_px = verticalViewAngle / cHeight;
 
+    //Climber Constants
+    public final static int climbArmSolenoid1 = 1;
+    public final static int climbArmSolenoid2 = 1;
+    public final static int climbHookSolenoid1 = 1;
+    public final static int climbHookSolenoid2 = 1;
+    public final static int mClimb1 = 1;
+    public final static int mClimb2 = 1;
+    public final static double winchExtendPos = 1;
+    public final static double winchContractPos = 1;
+    public final static int rHallEffectSensor = 1;
+    public final static int lHallEffectSensor = 1;
+
+    //Intake Constants
+    public final static int intakeMotor = 1;
+    public final static int intakeSolenoid1 = 1;
+    public final static int intakeSolendoid2 = 1;
+
+    //Index Constants
+    public final static int photoeye1 = 1;
+    public final static int photoeye2 = 1;
+    public final static int indexMotor = 1;
+
+    //Limelight Constants
+    public final static double h1 = 9;//HEIGHT OF LIMELIGHT
+    public final static double a1 = 25;//ANGLE FROM HORIZONTAL
+    public final static double h2 = 75;//HEIGHT OF TARGET
 }

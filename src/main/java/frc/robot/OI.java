@@ -1,60 +1,48 @@
 package frc.robot;
 
+//Subsystems
 import frc.robot.SubSystems.Climb;
 import frc.robot.SubSystems.Drive;
 import frc.robot.SubSystems.Hood;
 import frc.robot.SubSystems.Index;
 import frc.robot.SubSystems.Intake;
-import frc.robot.SubSystems.Shooter;
 import frc.robot.SubSystems.Lime;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import frc.robot.SubSystems.MegaShooter2PointO;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class OI extends SubsystemBase {
+    //Classes
     private Climb climb;
     private Intake intake;
     private Drive drive;
-    private Shooter shooter;
     public Hood hood;
     private Index index;
-    public Joystick joy1;
+    public Joystick driverControl;
+    public Joystick operatorControl;
     public Lime lime;
+    public MegaShooter2PointO megashooter2pointo;
 
     public OI(){
         //camera = Camera.get_Instance();
         drive = Drive.get_Instance();
-        joy1 = new Joystick(Constants.joy1);
+        driverControl = new Joystick(Constants.driverControl);
+        operatorControl = new Joystick(Constants.operatorControl);
         lime = new Lime();
 
+        //COMMENT TEST
+        /*
+        hood = Hood.get_Instance();
+        megashooter2pointo = MegaShooter2PointO.get_Instance();
+        */
+
 
     }
-    private void manualDrive(){
-        //TODO ADD CONTROLS ONCE I GET ROBOT
-        //TODO ADD SCALAR ONCE I GET ROBOT
-        //drive.setSwerve(joy1.getRawAxis(1/*TODO CHANGE TO VERT LEFT*/), joy1.getRawAxis(5/*TODO CHANGE TO HORIZ LEFT*/), joy1.getRawAxis(4/*TODO CHANGE TO HORIZ RIGHT*/));
-    }
-    private void testMotor(){
-        if(joy1.getRawButton(1)){
-            drive.frontRight.setSpeed(joy1.getRawAxis(1),joy1.getRawAxis(5));
-        }else if(joy1.getRawButton(2)){
-            drive.frontLeft.setSpeed(joy1.getRawAxis(1),joy1.getRawAxis(5));
-        }else if(joy1.getRawButton(3)){
-            drive.backRight.setSpeed(joy1.getRawAxis(1),joy1.getRawAxis(5));
-        }else {
-        drive.backLeft.setSpeed(joy1.getRawAxis(1),joy1.getRawAxis(5));
-        }
-    }
-    private void testCANCODER(){
-        System.out.println(drive.frontRight.getEncoder());
-    }
+
+
     private void driveTest(){
         //drive.setVector(90, Math.sqrt(Math.pow(Math.abs(joy1.getRawAxis(0)), 2)+Math.pow(Math.abs(joy1.getRawAxis(1)), 2)), joy1.getRawAxis(4));
-        drive.homeSwerve();
-        drive.resetGyro();
+        
         //drive.backLeft.setSpeed(0, 0.2);
         //drive.setVector(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(joy1.getRawAxis(0)), 2)+Math.pow(Math.abs(joy1.getRawAxis(1)), 2)), joy1.getRawAxis(4));
         //drive.backLeft.setAngleSpeed(drive.backLeft.anglePIDCalcABS(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1))));
@@ -62,6 +50,8 @@ public class OI extends SubsystemBase {
         //System.out.println(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1)));
         //System.out.println(drive.backLeft.getEncoder() + "ENC");  
     }
+
+
     public double driveAngle(double x, double y){
         double done = 0;
         y = -y;
@@ -92,28 +82,109 @@ public class OI extends SubsystemBase {
         return done;
     }
     public void periodic(){
-        //testCANCODER();
-        //manualDrive();
-        //testMotor();
-        if(joy1.getRawButton(1)){
-            driveTest();
-        }//else if(Math.sqrt(Math.pow(Math.abs(joy1.getRawAxis(0)), 2)+Math.pow(Math.abs(joy1.getRawAxis(1)), 2)) < 0.05 && Math.abs(joy1.getRawAxis(4))<0.05){
-           // drive.setVector(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1)), 0, 0);
-        else if(joy1.getRawButton(2)){
-            drive.setVector(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(joy1.getRawAxis(0)), 2)+Math.pow(Math.abs(joy1.getRawAxis(1)), 2)), lime.getHorOffset()/40);
+        //PERIODICS
+        drive.periodic();
+        //megashooter2pointo.periodic();
+        //Drive
+        
+        if(driverControl.getRawButton(1)){
+            drive.homeSwerve();
+        }
+        else if(cameraTracking()){
+            drive.setVector(driveAngle(driverControl.getRawAxis(0), driverControl.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(driverControl.getRawAxis(0)), 2)+Math.pow(Math.abs(driverControl.getRawAxis(1)), 2)), lime.getHorOffset()/-100);
         }
         else{
-            drive.setVector(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(joy1.getRawAxis(0)), 2)+Math.pow(Math.abs(joy1.getRawAxis(1)), 2)), joy1.getRawAxis(4));
+            drive.setVector(driveAngle(driverControl.getRawAxis(0), driverControl.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(driverControl.getRawAxis(0)), 2)+Math.pow(Math.abs(driverControl.getRawAxis(1)), 2)), driverControl.getRawAxis(4));
 
         }
+        System.out.println(lime.calcDistance());
         
-        drive.periodic();
-        drive.coEff = joy1.getRawAxis(1);
-        drive.driverIn = driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1));
-        //drive.backLeft.setSpeed(0.2, 0.2);
-        //drive.backRight.setSpeed(0.2, 0.2);
-        //System.out.println(drive.backRight.getEncoder() + "br");
-        //System.out.println(drive.backLeft.getEncoder() + "bl");
+        //INDEX AND INTAKE
+        if(shoot()){
+            megashooter2pointo.shoot();
+        }else if(intake()){
+            megashooter2pointo.intakeOn();
+        }else{
+            megashooter2pointo.intakeOff();
+        }
 
+        //CLIMB
+        if(prepClimb()){
+            megashooter2pointo.prepCLimb();
+        }else if(extendArms()){
+            megashooter2pointo.extendArms();
+        }else if(climbToLvl1()){
+            megashooter2pointo.armsIn();
+        }else if(traversalClimb()){
+            megashooter2pointo.traversalClimb();
+        }
+        
+        
+
+        //COMMENT TEST
+        /*
+        //INTAKE
+        if(flipIntake()){
+            megashooter2pointo.flipIntake();
+        }
+
+        //INDEX
+        if(shoot()){
+            megashooter2pointo.setShooterRPM(Constants.uTarmacRPM, Constants.lTarmacRPM);
+            megashooter2pointo.shoot();
+        }
+        if(intake()){
+            megashooter2pointo.intakeOn();
+        }
+        else{
+            megashooter2pointo.intakeOff();
+        }
+
+        //Climb
+        if(climbToLvl1()){
+            megashooter2pointo.climbToLvl1();
+        }else if(traversalClimb()){
+            megashooter2pointo.traversalClimb();
+        }
+        */
     }
+    //DRIVER CONTROLS
+    public boolean homeSwerve(){
+        return driverControl.getRawButton(1);
+    }
+
+    public boolean cameraTracking(){
+        return driverControl.getRawButton(2);
+    }
+
+    public boolean intake(){
+        return driverControl.getTrigger();
+    }
+
+    //OPERATORS
+    public boolean flipIntake(){
+        return operatorControl.getRawButton(1);
+    }
+
+    public boolean shoot(){
+        return operatorControl.getRawButton(2);
+    }
+
+    public boolean prepClimb(){
+        return operatorControl.getRawButton(3);
+    }
+
+    public boolean extendArms(){
+        return operatorControl.getRawButton(4);
+    }
+
+    public boolean climbToLvl1(){
+        return operatorControl.getRawButton(5);
+    }
+
+    public boolean traversalClimb(){
+        return operatorControl.getRawButton(6);
+    }
+
+
 }
