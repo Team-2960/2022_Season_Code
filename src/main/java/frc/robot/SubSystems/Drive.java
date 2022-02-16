@@ -66,7 +66,8 @@ public class Drive extends SubsystemBase {
         return drive;
       }
       public Drive(){
-         navX = new AHRS(SPI.Port.kMXP);
+         navX = new AHRS(SPI.Port.kMXP, (byte) 200);
+         navX.calibrate();
          navX.resetDisplacement();
          gyro = new AnalogGyro(0);
          gyro2 = new ADXRS450_Gyro();
@@ -99,48 +100,65 @@ public class Drive extends SubsystemBase {
         drive.setVector(180, 0, 0);
       }
       public void setSwerve(double angleVectorX, double angleVectorY, double rotationVectorX){
-        double rotationVectorY = rotationVectorX;
-        double A = angleVectorX - rotationVectorX;//THE PLUS AND MINUS MAY BE FLIPPED
-        double B = angleVectorX + rotationVectorX;
-        double C = angleVectorY - rotationVectorY;
-        double D = angleVectorY + rotationVectorY;
+        SmartDashboard.putNumber("angleVectorX", angleVectorX);
+        SmartDashboard.putNumber("angleVectorY", angleVectorY);
+        SmartDashboard.putNumber("rotVectorX", rotationVectorX);
 
-        frontLeftSwerveSpeed = Math.sqrt(Math.pow(A,2.0) + Math.pow(C,2.0));
-        frontLeftSwerveAngle = Math.atan2(A,C)*180/Math.PI;
-        backLeftSwerveSpeed =  Math.sqrt(Math.pow(A,2.0) + Math.pow(D,2.0));
-        backLeftSwerveAngle = Math.atan2(A,D)*180/Math.PI;
-        frontRightSwerveSpeed =  Math.sqrt(Math.pow(B,2.0) + Math.pow(C,2.0));
-        frontRightSwerveAngle = Math.atan2(B,C)*180/Math.PI;
-        backRightSwerveSpeed =  Math.sqrt(Math.pow(B,2.0) + Math.pow(D,2.0));
-        backRightSwerveAngle = Math.atan2(B,D)*180/Math.PI;
-        
+
+        boolean isDeadZone = Math.abs(angleVectorX) < .15 &&
+                             Math.abs(angleVectorY) < .15 &&
+                             Math.abs(rotationVectorX) < 0.5;
+        if(!isDeadZone){
+          double rotationVectorY = rotationVectorX;
+          double A = angleVectorX - rotationVectorX;//THE PLUS AND MINUS MAY BE FLIPPED
+          double B = angleVectorX + rotationVectorX;
+          double C = angleVectorY - rotationVectorY;
+          double D = angleVectorY + rotationVectorY;
+          
+          frontLeftSwerveSpeed = Math.sqrt(Math.pow(A,2.0) + Math.pow(C,2.0));
+          frontLeftSwerveAngle = Math.atan2(A,C)*180/Math.PI;
+          backLeftSwerveSpeed =  Math.sqrt(Math.pow(A,2.0) + Math.pow(D,2.0));
+          backLeftSwerveAngle = Math.atan2(A,D)*180/Math.PI;
+          frontRightSwerveSpeed =  Math.sqrt(Math.pow(B,2.0) + Math.pow(C,2.0));
+          frontRightSwerveAngle = Math.atan2(B,C)*180/Math.PI;
+          backRightSwerveSpeed =  Math.sqrt(Math.pow(B,2.0) + Math.pow(D,2.0));
+          backRightSwerveAngle = Math.atan2(B,D)*180/Math.PI;
+        }else{
+          frontLeftSwerveSpeed = 0;
+          frontRightSwerveSpeed = 0;
+          backLeftSwerveSpeed = 0;
+          backLeftSwerveSpeed = 0;
+        }
         //SET ALL OF THE NUMBERS FOR THE SWERVE VARS
       }
       public void setVector(double angle, double mag, double rotationVectorX){
+        
         double angleVX = Math.cos((angle-gyroAngle)*Math.PI/180) *180/Math.PI * mag;//TODO CHECK about RAD VS DEG
         double angleVY = Math.sin((angle-gyroAngle)*Math.PI/180) *180/Math.PI * mag;
         targetAngleRate = rotationVectorX;
         setSwerve(angleVX, angleVY, angleRateVector);
+        
+
       } 
       public void sanitizeAngle(){
-        gyroAngle = navX.getAngle();
-        while(gyroAngle > 360){
+        gyroAngle = navX.getFusedHeading();
+        /*while(gyroAngle > 360){
           gyroAngle = gyroAngle - 360;
         }
         while(gyroAngle < 0){
           gyroAngle = gyroAngle + 360;
-        }
+        }*/
 
       }
+      
 
       double xDis;
       public void xDisplacement(){
         xDis = xDis + 0.05 *navX.getVelocityX();
       }
       public void angleRatePID(double target){
-        target = target * 180;//Takes in value -1 - 1 and turns it into max / min 180/-180
+        target = target * 30;//Takes in value -1 - 1 and turns it into max / min 30/-30
         angleRateVector = -1* angleRatePID.calculate(navX.getRate(), target);
-        
       }
       
       public void periodic(){
@@ -152,6 +170,9 @@ public class Drive extends SubsystemBase {
         //System.out.println(backRight.getEncoder() + "BR");
         sanitizeAngle();
         angleRatePID(targetAngleRate);
+        SmartDashboard.putNumber("input", navX.getFusedHeading());
+        SmartDashboard.putNumber("output", navX.getRate());
+        SmartDashboard.putNumber("c", targetAngleRate/navX.getRate());
         /*System.out.println(backRightSwerveAngle);
         System.out.println(backRightSwerveSpeed);
         System.out.println(backLeftSwerveAngle);
@@ -164,14 +185,11 @@ public class Drive extends SubsystemBase {
          // values as the robot turns clockwise. This is not standard convention that is
         // used by the WPILib classes.
         // Update the pose
-
-
+        SmartDashboard.putNumber("rate", gyro2.getRate());
         frontLeft.setSpeed(frontLeftSwerveSpeed/75, frontLeft.anglePIDCalcABS(frontLeftSwerveAngle+180));
         frontRight.setSpeed(frontRightSwerveSpeed/75, frontRight.anglePIDCalcABS(frontRightSwerveAngle+180));
         backLeft.setSpeed(backLeftSwerveSpeed/75, backLeft.anglePIDCalcABS(backLeftSwerveAngle+180));
         backRight.setSpeed(backRightSwerveSpeed/75, backRight.anglePIDCalcABS(backRightSwerveAngle+180));
-        System.out.println(navX.getAngle() + "raw");
-        System.out.println(gyroAngle);
       }
 
 

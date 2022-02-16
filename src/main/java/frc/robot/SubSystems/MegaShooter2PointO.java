@@ -14,12 +14,12 @@ public class MegaShooter2PointO extends SubsystemBase {
     private static MegaShooter2PointO megashooter2pointo;
 
     //SUBSYSTEMS
-    Climb climb;
-    Drive drive;
-    Hood hood;
-    Index index;
-    Intake intake;
-    Lime lime;
+    public Climb climb;
+    public Drive drive;
+    public Hood hood;
+    public Index index;
+    public Intake intake;
+    public Lime lime;
 
     //Climbing VARS
     boolean isClimbExtended = false;

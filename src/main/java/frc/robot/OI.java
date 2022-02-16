@@ -10,6 +10,7 @@ import frc.robot.SubSystems.Lime;
 import frc.robot.SubSystems.MegaShooter2PointO;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class OI extends SubsystemBase {
     //Classes
@@ -41,15 +42,86 @@ public class OI extends SubsystemBase {
 
 
     private void driveTest(){
-        //drive.setVector(90, Math.sqrt(Math.pow(Math.abs(joy1.getRawAxis(0)), 2)+Math.pow(Math.abs(joy1.getRawAxis(1)), 2)), joy1.getRawAxis(4));
-        
-        //drive.backLeft.setSpeed(0, 0.2);
-        //drive.setVector(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(joy1.getRawAxis(0)), 2)+Math.pow(Math.abs(joy1.getRawAxis(1)), 2)), joy1.getRawAxis(4));
-        //drive.backLeft.setAngleSpeed(drive.backLeft.anglePIDCalcABS(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1))));
-        //drive.backLeft.setDriveSpeed(Math.sqrt(Math.pow(joy1.getRawAxis(0), 2)+Math.pow(joy1.getRawAxis(1), 2))/4);
-        //System.out.println(driveAngle(joy1.getRawAxis(0), joy1.getRawAxis(1)));
-        //System.out.println(drive.backLeft.getEncoder() + "ENC");  
+        if(driverControl.getRawButton(1)){
+            drive.backLeft.setAngleSpeed(0.1);
+        }
+        else{
+            drive.backLeft.setAngleSpeed(0);
+        }
+        if(driverControl.getRawButton(2)){
+            drive.backLeft.setDriveSpeed(0.1);
+        }
+        else{
+            drive.backLeft.setDriveSpeed(0);
+
+        }
+        if(driverControl.getRawButton(3)){
+            megashooter2pointo.hood.get_Instance().setSpeed(0.1, 0.1);
+        }
+        else{
+            megashooter2pointo.hood.get_Instance().setSpeed(0, 0);
+        }
+        if(driverControl.getRawButton(4)){
+            megashooter2pointo.climb.get_Instance().setPositionHook(1);
+        }
+        if(driverControl.getRawButton(5)){
+            megashooter2pointo.climb.get_Instance().setPositionHook(0);
+        }
+        if(driverControl.getRawButton(6)){
+            megashooter2pointo.climb.setPositionArm(1);
+        }
+        if(driverControl.getRawButton(7)){
+            megashooter2pointo.climb.setPositionArm(0);
+        }
     }
+     private void driveTest2(){
+        if(driverControl.getRawButton(1)){
+            drive.backRight.setAngleSpeed(0.1);
+        }
+        else{
+            drive.backRight.setAngleSpeed(0);
+        }
+        if(driverControl.getRawButton(2)){
+            drive.backRight.setDriveSpeed(0.1);
+        }
+        else{
+            drive.backRight.setDriveSpeed(0);
+
+        }
+        if(driverControl.getRawButton(3)){
+            megashooter2pointo.climb.get_Instance().setWinchSpeed(0.1, 0.1);
+        }
+        else{
+            megashooter2pointo.climb.get_Instance().setWinchSpeed(0, 0);
+        }
+        if(driverControl.getRawButton(4)){
+            megashooter2pointo.flipIntake();
+        }
+        if(driverControl.getRawButton(5)){
+            drive.frontRight.setDriveSpeed(0.1);
+        }
+        else{
+            drive.frontRight.setDriveSpeed(0);
+        }
+        if(driverControl.getRawButton(6)){
+            drive.frontRight.setAngleSpeed(0.1);
+        }
+        else{
+            drive.frontRight.setAngleSpeed(0);
+        }
+        if(driverControl.getRawButton(7)){
+            drive.frontLeft.setAngleSpeed(0.1);
+        }
+        else{
+            drive.frontLeft.setAngleSpeed(0);
+        }
+        if(driverControl.getRawButton(8)){
+            drive.frontLeft.setDriveSpeed(0.1);
+        }
+        else{
+            drive.frontLeft.setDriveSpeed(0);
+        }
+     }
 
 
     public double driveAngle(double x, double y){
@@ -84,6 +156,8 @@ public class OI extends SubsystemBase {
     public void periodic(){
         //PERIODICS
         drive.periodic();
+        SmartDashboard.putNumber("distance", lime.calcDistance());
+
         //megashooter2pointo.periodic();
         //Drive
         
@@ -91,14 +165,14 @@ public class OI extends SubsystemBase {
             drive.homeSwerve();
         }
         else if(cameraTracking()){
-            drive.setVector(driveAngle(driverControl.getRawAxis(0), driverControl.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(driverControl.getRawAxis(0)), 2)+Math.pow(Math.abs(driverControl.getRawAxis(1)), 2)), lime.getHorOffset()/-100);
+            drive.setVector(driveAngle(driverControl.getRawAxis(0), driverControl.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(driverControl.getRawAxis(0)), 2)+Math.pow(Math.abs(driverControl.getRawAxis(1)), 2)), lime.getHorOffset()/-10);
         }
         else{
             drive.setVector(driveAngle(driverControl.getRawAxis(0), driverControl.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(driverControl.getRawAxis(0)), 2)+Math.pow(Math.abs(driverControl.getRawAxis(1)), 2)), driverControl.getRawAxis(4));
 
         }
-        System.out.println(lime.calcDistance());
-        
+        //System.out.println(lime.getHorOffset());
+        /*
         //INDEX AND INTAKE
         if(shoot()){
             megashooter2pointo.shoot();
@@ -117,38 +191,12 @@ public class OI extends SubsystemBase {
             megashooter2pointo.armsIn();
         }else if(traversalClimb()){
             megashooter2pointo.traversalClimb();
-        }
-        
-        
+        }/*/
+        //TEST OI
 
-        //COMMENT TEST
-        /*
-        //INTAKE
-        if(flipIntake()){
-            megashooter2pointo.flipIntake();
-        }
-
-        //INDEX
-        if(shoot()){
-            megashooter2pointo.setShooterRPM(Constants.uTarmacRPM, Constants.lTarmacRPM);
-            megashooter2pointo.shoot();
-        }
-        if(intake()){
-            megashooter2pointo.intakeOn();
-        }
-        else{
-            megashooter2pointo.intakeOff();
-        }
-
-        //Climb
-        if(climbToLvl1()){
-            megashooter2pointo.climbToLvl1();
-        }else if(traversalClimb()){
-            megashooter2pointo.traversalClimb();
-        }
-        */
         //GITHUB??????
         //GITHUB 2
+
     }
     //DRIVER CONTROLS
     public boolean homeSwerve(){
