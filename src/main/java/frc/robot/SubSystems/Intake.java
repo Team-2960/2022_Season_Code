@@ -22,7 +22,9 @@ public class Intake extends SubsystemBase {
       }
       Intake(){
         iMotor = new TalonFX(Constants.intakeMotor);
-        sIntake = new DoubleSolenoid(Constants.intakeSolenoid1, Constants.intakeSolendoid2);
+        sIntake = new DoubleSolenoid(20, PneumaticsModuleType.REVPH, 
+                                     Constants.intakeSolenoid1, 
+                                     Constants.intakeSolendoid2);
       }
       public void setPosition(int state){
         if(state == 0){

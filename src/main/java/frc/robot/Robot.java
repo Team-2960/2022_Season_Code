@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.util.sendable.Sendable;
 import frc.robot.Auton.*;
 import frc.robot.Constants;
 import frc.robot.SubSystems.*;
@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   public OI oi;
   private Command autonCommand = null;
+  private PowerDistribution pdp;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -43,8 +44,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     oi = new OI();
-    PowerDistribution pdp = new PowerDistribution(1);
-    pdp.s
+    pdp = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
+    pdp.setSwitchableChannel(true);
   }
 
   @Override

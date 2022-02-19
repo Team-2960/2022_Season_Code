@@ -36,8 +36,9 @@ public class Climb extends SubsystemBase {
       }
 
       Climb(){
-        sClimbArm = new DoubleSolenoid(Constants.climbArmSolenoid1, Constants.climbArmSolenoid2);
-        sClimbHook = new DoubleSolenoid(Constants.climbHookSolenoid1, Constants.climbHookSolenoid2);
+        new DoubleSolenoid(20, PneumaticsModuleType.REVPH, Constants.climbArmSolenoid1, Constants.climbArmSolenoid2);
+        sClimbArm = new DoubleSolenoid(20, PneumaticsModuleType.REVPH, Constants.climbArmSolenoid1, Constants.climbArmSolenoid2);
+        sClimbHook = new DoubleSolenoid(20, PneumaticsModuleType.REVPH, Constants.climbHookSolenoid1, Constants.climbHookSolenoid2);
         mLeftClimb = new TalonFX(Constants.mClimb1);
         mRightClimb = new TalonFX(Constants.mClimb2);
         rHallEffect = new DigitalInput(Constants.rHallEffectSensor);
