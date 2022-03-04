@@ -162,6 +162,12 @@ public class OI extends SubsystemBase {
         //System.out.println(lime.getHorOffset());
         
         //INDEX AND INTAKE
+        if(intake()){
+            megashooter2pointo.intakeOn();
+        }
+        else{
+            megashooter2pointo.intakeOff();
+        }
         /*
         if(driverControl.getRawButton(5)){
             //megashooter2pointo.shoot();
@@ -179,7 +185,7 @@ public class OI extends SubsystemBase {
             megashooter2pointo.index.setSpeed(-0);
 
         }
-        */
+        *//*
         if(driverControl.getPOV() == 90){
         if(driverControl.getRawButton(7)){
             megashooter2pointo.climb.setWinchSpeed(0.4, 0.4);
@@ -194,12 +200,12 @@ public class OI extends SubsystemBase {
             megashooter2pointo.climb.setPositionArm(1);
         }else if(driverControl.getRawButton(6)){
             megashooter2pointo.climb.setPositionArm(0);
-        }
+        }*/
         if(driverControl.getPOV(0)==0){
             megashooter2pointo.intakeUp();
         }else if(driverControl.getPOV(0) == 180){
             megashooter2pointo.intakeDown();
-        }
+        }/*
         
         if(driverControl.getRawButton(1)){
             megashooter2pointo.enableTravClimblvl1();
@@ -209,7 +215,7 @@ public class OI extends SubsystemBase {
         }
         else if(driverControl.getRawButton(3)){
             megashooter2pointo.enableTravClimblvl3();
-        }
+        }*/
         SmartDashboard.putNumber("POV", driverControl.getPOV(0));
         //CLIMB
         /*

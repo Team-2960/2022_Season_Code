@@ -305,6 +305,7 @@ public class MegaShooter2PointO extends SubsystemBase {
       }
 
       public void periodic(){
+          indexing();
           index.inTransit();
           //Climbing
           traversalClimblvl1();
