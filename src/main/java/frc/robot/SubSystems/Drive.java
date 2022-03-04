@@ -46,6 +46,7 @@ public class Drive extends SubsystemBase {
     public static PIDController PIDDBR;
     public static PIDController PIDABR;
     public static PIDController angleRatePID;
+    public static PIDController toAnglePID;
     public AHRS navX;
     public Swerve frontLeft;
     public Swerve frontRight;
@@ -53,7 +54,6 @@ public class Drive extends SubsystemBase {
     public Swerve backLeft;
     public double gyroAngle;
     public AnalogGyro gyro;
-    public ADXRS450_Gyro gyro2;
     public SwerveDriveOdometry m_odometry;
     public double maxTurnSpeed;
     public double angleRateVector;
@@ -70,9 +70,9 @@ public class Drive extends SubsystemBase {
          navX.calibrate();
          navX.resetDisplacement();
          gyro = new AnalogGyro(0);
-         gyro2 = new ADXRS450_Gyro();
 
          angleRatePID = new PIDController(Constants.aRP, Constants.aRI, Constants.aRD);
+         toAnglePID = new PIDController(Constants.kPTA, Constants.kITA, Constants.kDTA);
          PIDDFL = new PIDController(Constants.dPFL, Constants.dIFL, Constants.dDFL);
          PIDAFL = new PIDController(Constants.aPFL, Constants.aIFL, Constants.aDFL);
          PIDDFR = new PIDController(Constants.dPFR, Constants.dIFR, Constants.dDFR);
@@ -107,13 +107,13 @@ public class Drive extends SubsystemBase {
 
         boolean isDeadZone = Math.abs(angleVectorX) < .15 &&
                              Math.abs(angleVectorY) < .15 &&
-                             Math.abs(rotationVectorX) < 0.5;
+                             Math.abs(rotationVectorX) < 1;
         if(!isDeadZone){
           double rotationVectorY = rotationVectorX;
-          double A = angleVectorX - rotationVectorX;//THE PLUS AND MINUS MAY BE FLIPPED
-          double B = angleVectorX + rotationVectorX;
-          double C = angleVectorY - rotationVectorY;
-          double D = angleVectorY + rotationVectorY;
+          double A = angleVectorX + rotationVectorX;//THE PLUS AND MINUS MAY BE FLIPPED
+          double B = angleVectorX - rotationVectorX;
+          double C = angleVectorY + rotationVectorY;
+          double D = angleVectorY - rotationVectorY;
           
           frontLeftSwerveSpeed = Math.sqrt(Math.pow(A,2.0) + Math.pow(C,2.0));
           frontLeftSwerveAngle = Math.atan2(A,C)*180/Math.PI;
@@ -142,6 +142,7 @@ public class Drive extends SubsystemBase {
       } 
       public void sanitizeAngle(){
         gyroAngle = navX.getFusedHeading();
+        SmartDashboard.putNumber("fused heading", gyroAngle);
         /*while(gyroAngle > 360){
           gyroAngle = gyroAngle - 360;
         }
@@ -160,16 +161,22 @@ public class Drive extends SubsystemBase {
         target = target * 30;//Takes in value -1 - 1 and turns it into max / min 30/-30
         angleRateVector = -1* angleRatePID.calculate(navX.getRate(), target);
       }
+      public double anglePID(double target){
+        //Takes in value -1 - 1 and turns it into max / min 30/-30
+        return toAnglePID.calculate(gyroAngle, target);
+      }
+
       
       public void periodic(){
+        /*
         //System.out.println(frontLeftSwerveSpeed/300);
         //+180+Constants.flHome
         //System.out.println(frontLeft.getEncoder() + "FL");
         //System.out.println(frontRight.getEncoder() + "FR");
         //System.out.println(backLeft.getEncoder() + "BL");
         //System.out.println(backRight.getEncoder() + "BR");
-        sanitizeAngle();
-        angleRatePID(targetAngleRate);
+        */sanitizeAngle();
+        angleRatePID(targetAngleRate);/*
         SmartDashboard.putNumber("input", navX.getFusedHeading());
         SmartDashboard.putNumber("output", navX.getRate());
         SmartDashboard.putNumber("c", targetAngleRate/navX.getRate());
@@ -180,16 +187,23 @@ public class Drive extends SubsystemBase {
         System.out.println(frontRightSwerveAngle);
         System.out.println(frontRightSwerveSpeed);
         System.out.println(frontLeftSwerveAngle);
-        System.out.println(frontLeftSwerveSpeed);*/
-          // Get my gyro angle. We are negating the value because gyros return positive
-         // values as the robot turns clockwise. This is not standard convention that is
-        // used by the WPILib classes.
-        // Update the pose
-        SmartDashboard.putNumber("rate", gyro2.getRate());
-        frontLeft.setSpeed(frontLeftSwerveSpeed/75, frontLeft.anglePIDCalcABS(frontLeftSwerveAngle+180));
-        frontRight.setSpeed(frontRightSwerveSpeed/75, frontRight.anglePIDCalcABS(frontRightSwerveAngle+180));
-        backLeft.setSpeed(backLeftSwerveSpeed/75, backLeft.anglePIDCalcABS(backLeftSwerveAngle+180));
-        backRight.setSpeed(backRightSwerveSpeed/75, backRight.anglePIDCalcABS(backRightSwerveAngle+180));
+        System.out.println(frontLeftSwerveSpeed);
+        //Get my gyro angle. We are negating the value because gyros return positive
+        //values as the robot turns clockwise. This is not standard convention that is
+        //used by the WPILib classes.
+        //Update the pose*/
+        frontLeft.setSpeed(frontLeftSwerveSpeed/75, frontLeft.anglePIDCalcABS(frontLeftSwerveAngle));
+        frontRight.setSpeed(frontRightSwerveSpeed/75, frontRight.anglePIDCalcABS(frontRightSwerveAngle));
+        backLeft.setSpeed(backLeftSwerveSpeed/75, backLeft.anglePIDCalcABS(backLeftSwerveAngle));
+        backRight.setSpeed(backRightSwerveSpeed/75, backRight.anglePIDCalcABS(backRightSwerveAngle));
+        SmartDashboard.putNumber("fr", frontRight.getEncoder());
+        SmartDashboard.putNumber("fl", frontLeft.getEncoder());
+        SmartDashboard.putNumber("br", backRight.getEncoder());
+        SmartDashboard.putNumber("bl", backLeft.getEncoder());
+        SmartDashboard.putNumber("fr angle", frontRightSwerveAngle);
+        SmartDashboard.putNumber("fl angle", frontLeftSwerveAngle);
+
+
       }
 
 

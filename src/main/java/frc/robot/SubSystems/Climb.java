@@ -13,7 +13,8 @@ public class Climb extends SubsystemBase {
     private static Climb climb;
 
     //Solenoids
-    private DoubleSolenoid sClimbArm;
+    private DoubleSolenoid sClimbLArm;
+    private DoubleSolenoid sClimbRArm;
     private DoubleSolenoid sClimbHook;
 
     //Motors
@@ -24,6 +25,9 @@ public class Climb extends SubsystemBase {
     //Hall Effect Sensors
     private DigitalInput rHallEffect;
     private DigitalInput lHallEffect;
+
+    //Limit Switch
+    private DigitalInput limitSwitch;
 
 
 
@@ -36,21 +40,24 @@ public class Climb extends SubsystemBase {
       }
 
       Climb(){
-        new DoubleSolenoid(20, PneumaticsModuleType.REVPH, Constants.climbArmSolenoid1, Constants.climbArmSolenoid2);
-        sClimbArm = new DoubleSolenoid(20, PneumaticsModuleType.REVPH, Constants.climbArmSolenoid1, Constants.climbArmSolenoid2);
-        sClimbHook = new DoubleSolenoid(20, PneumaticsModuleType.REVPH, Constants.climbHookSolenoid1, Constants.climbHookSolenoid2);
-        mLeftClimb = new TalonFX(Constants.mClimb1);
-        mRightClimb = new TalonFX(Constants.mClimb2);
+        sClimbLArm = new DoubleSolenoid(20, PneumaticsModuleType.CTREPCM, Constants.climbLArmSolenoid1, Constants.climbLArmSolenoid2);
+        sClimbRArm = new DoubleSolenoid(20, PneumaticsModuleType.CTREPCM, Constants.climbRArmSolenoid1, Constants.climbRArmSolenoid2);
+        sClimbHook = new DoubleSolenoid(20, PneumaticsModuleType.CTREPCM, Constants.climbHookSolenoid1, Constants.climbHookSolenoid2);
+        mLeftClimb = new TalonFX(Constants.mClimbL);
+        mRightClimb = new TalonFX(Constants.mClimbR);
         rHallEffect = new DigitalInput(Constants.rHallEffectSensor);
         lHallEffect = new DigitalInput(Constants.lHallEffectSensor);
+        limitSwitch = new DigitalInput(Constants.limitSwitchPort);
       }
 
       public void setPositionArm(int state){//0 = down 1 = up
         if(state == 0){
-          sClimbArm.set(Value.kForward);
+          sClimbLArm.set(Value.kForward);
+          sClimbRArm.set(Value.kForward);
         }
         else if(state == 1){
-          sClimbArm.set(Value.kReverse);
+          sClimbLArm.set(Value.kReverse);
+          sClimbRArm.set(Value.kReverse);
         }
       }
 
@@ -65,7 +72,7 @@ public class Climb extends SubsystemBase {
 
       public void setWinchSpeed(double left, double right){
         mLeftClimb.set(ControlMode.PercentOutput, left);
-        mRightClimb.set(ControlMode.PercentOutput, right);
+        mRightClimb.set(ControlMode.PercentOutput, -right);
       }
 
       public double getWinchPos(){
@@ -77,6 +84,15 @@ public class Climb extends SubsystemBase {
       }
 
       public boolean isArmsExtended(){
-        return (sClimbArm.get() == Value.kForward);
+        return !(sClimbLArm.get() == Value.kForward && sClimbRArm.get() == Value.kForward);
+      }
+
+      public boolean getLimitSwitch(){
+        return limitSwitch.get();
+      }
+      public void resetWinchPos(){
+        if(limitSwitch.get()){
+          mLeftClimb.setSelectedSensorPosition(0); 
+        }
       }
 }

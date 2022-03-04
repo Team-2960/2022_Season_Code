@@ -19,6 +19,7 @@ import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.controller.BangBangController;
 
 public class Hood extends SubsystemBase {
     private static final String Controlmode = null;
@@ -33,6 +34,10 @@ public class Hood extends SubsystemBase {
     private double lowerWheelVel;
     private TalonFX mLowerWheel;
 
+    //bang bang controllers
+    private BangBangController bangL;
+    private BangBangController bangU;
+
 
     private double shooterTolerance = 0;
 
@@ -43,16 +48,24 @@ public class Hood extends SubsystemBase {
         return hood;
       }
       Hood(){
-          mUpperWheel = new TalonFX(19);
-          mLowerWheel = new TalonFX(20);
+          //Motors
+          mUpperWheel = new TalonFX(Constants.mUpperShooter);
+          mLowerWheel = new TalonFX(Constants.mLowerShooter);
+          //BANG BANG
+          bangU = new BangBangController();
+          bangL = new BangBangController();
+          //PID STUFF
           lowerWheelPID = new PIDController(Constants.lWP, Constants.lWI, Constants.lWD);
           upperWheelPID = new PIDController(Constants.uWP, Constants.uWI, Constants.uWD);
       }
-      public void setSpeed(double power1, double power2){
-        mUpperWheel.set(ControlMode.PercentOutput, -power1);
-        mLowerWheel.set(ControlMode.PercentOutput, power2);
+      public void setSpeed(double powerL, double powerU){
+        mUpperWheel.set(ControlMode.PercentOutput, -powerU);
+        mLowerWheel.set(ControlMode.PercentOutput, powerL);
       }
 
+      public void bangBang(){
+        setSpeed(bangL.calculate(mLowerWheel.getSelectedSensorVelocity(), lowerWheelVel), bangU.calculate(mUpperWheel.getSelectedSensorVelocity(), upperWheelVel));
+      }
       public void setWheelSpeedVel(double upper, double lower){//IN SENSOR UNITS/ 100 MS
         upperWheelVel = upper;
         lowerWheelVel = lower;
@@ -69,6 +82,4 @@ public class Hood extends SubsystemBase {
           return false;
         }
       }
-
-
 }

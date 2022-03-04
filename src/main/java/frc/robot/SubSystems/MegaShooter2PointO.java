@@ -1,5 +1,7 @@
 package frc.robot.SubSystems;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
@@ -22,11 +24,26 @@ public class MegaShooter2PointO extends SubsystemBase {
     public Lime lime;
 
     //Climbing VARS
-    boolean isClimbExtended = false;
-    double climbSequence = 1;
-    boolean enableTrav = false;
+    boolean isClimbExtendedlvl1 = false;
+    boolean isClimbExtendedlvl2 = false;
+    boolean isClimbExtendedlvl3 = false;
+
+    double climbSequencelvl1 = 1;
+    double climbSequencelvl2 = 1;
+    double climbSequencelvl3 = 1;
+
+    boolean enableTravlvl1 = false;
+    boolean enableTravlvl2 = false;
+    boolean enableTravlvl3 = false;
+    boolean go = false;
+
     //Intake VARS
     boolean isIntakeOut = false;
+    boolean intakeEnabled = false;
+    boolean shooting = false;
+
+    //Climb Timer
+    Timer climbTimer;
 
 
     public static MegaShooter2PointO get_Instance(){
@@ -43,121 +60,263 @@ public class MegaShooter2PointO extends SubsystemBase {
           index = Index.get_Instance();
           intake = Intake.get_Instance();
           lime = Lime.get_Instance();
+          climbTimer = new Timer();
+      }
+      public void indexing(){
+        if(index.isInTransit() || (!index.getUpperPhotoeye() && index.getLowerPhotoeye()) || shooting){
+          index.setSpeed(-0.25);
+        }else{
+          index.setSpeed(0);
+        }
+        if((!index.getUpperPhotoeye() && index.getLowerPhotoeye()) || (intakeEnabled && !(index.getLowerPhotoeye() && index.getUpperPhotoeye()))){//!(index.getLowerPhotoeye() && (index.isInTransit() || index.getUpperPhotoeye()))
+          intake.setSpeed(-0.6);
+        }else{
+          intake.setSpeed(0);
+        }
       }
       public void intakeOn(){
-        if(index.isInTransit() || (!index.getUpperPhotoeye() && index.getLowerPhotoeye())){
-          index.setSpeed(1);
-        }else{
-          index.setSpeed(0);
-        }
-        if(!(index.getLowerPhotoeye() && (index.isInTransit() || index.getUpperPhotoeye()))){
-          intake.setSpeed(1);
-        }else{
-          index.setSpeed(0);
-        }
+        intakeEnabled = true;
       }
       public void intakeOff(){
-        intake.setSpeed(0);
-        index.setSpeed(0);
+        intakeEnabled = false;
       }
 
 
       public void setShooterRPM(double targetUpper, double targetLower){
         hood.setWheelSpeedVel(targetUpper, targetLower);
       }
-
-      public void shoot(){
+      public void setSpeed(double speed){
+        hood.setSpeed(-speed, -speed);
+      }
+      public void shootOn(){
         if(hood.isWheelAtVel()){
-          if(index.getUpperPhotoeye() == true){
-            index.setSpeed(1);
-          }else{
-            intake.setSpeed(1);
-            index.setSpeed(1);
-          }
+          shooting = true;
         }else{
-          intake.setSpeed(0);
-          index.setSpeed(0);
+          shooting = false;
         }
       }
+      public void shootOff(){
+        shooting = false;
+      }
 
-      private void intakeUp(){
+      public void intakeUp(){
         intake.setPosition(1);
       }
 
-      private void intakeDown(){
+      public void intakeDown(){
         intake.setPosition(0);
       }
 
-      private void intakeControl(){
-        if(isIntakeOut){
-          intakeDown();
-        }else{
-          intakeUp();
-        }
-      }
 
-      public void flipIntake(){
-        isIntakeOut = !isIntakeOut;
-      }
       
-      public void prepCLimb(){
+      public void prepCLimblvl1(){
       climb.setPositionHook(0);
         if(climb.getWinchPos() > Constants.winchExtendPos){
           climb.setWinchSpeed(0, 0);
-          climbSequence =2;
+          climbSequencelvl1 =2;
         }else{
-          climb.setWinchSpeed(0.1, 0.1);
+          climb.setWinchSpeed(0.6, 0.6);
         }
       }
 
-      public void extendArms(){
+      public void prepCLimblvl2(){
+          if(climb.getWinchPos() > Constants.winchExtendPos){
+            climb.setWinchSpeed(0, 0);
+            climbSequencelvl2 =2;
+          }else{
+            climb.setWinchSpeed(0.6, 0.6);
+          }
+        }
+
+        public void prepCLimblvl3(){
+            if(climb.getWinchPos() > Constants.winchExtendPos){
+              climb.setWinchSpeed(0, 0);
+              climbSequencelvl3 =2;
+            }else{
+              climb.setWinchSpeed(0.6, 0.6);
+            }
+          }
+      
+      public void extendArmslvl1(){
         climb.setPositionArm(1);
         if(climb.isArmsExtended()){
-          climbSequence = 3;
+          climbSequencelvl1 = 3;
+          System.out.println("to three");
+          climbTimer.start();
+        }
+      }
+
+      public void extendArmslvl2(){
+        climb.setPositionArm(1);
+        if(climb.isArmsExtended()){
+          climbSequencelvl2 = 3;
+          System.out.println("to three");
+          climbTimer.start();
+        }
+      }
+
+      public void extendArmslvl3(){
+        climb.setPositionArm(1);
+        if(climb.isArmsExtended()){
+          climbSequencelvl3 = 3;
+          System.out.println("to three");
+          climbTimer.start();
         }
       }
       
-      public void armsIn(){
-        climb.setWinchSpeed(-0.1, -0.1);
-        if(climb.isAttached()){
-          isClimbExtended = true;
-          climb.setWinchSpeed(0, 0);
+      public void armsInlvl1(){
+        if(isClimbExtendedlvl1 == false){
+        if(climbTimer.get() > 0.5){
+          climbTimer.stop();
+          climbTimer.reset();
+          go = true;
         }
-        if(isClimbExtended == true){
+        if(go){
+        climb.setWinchSpeed(-0.6, -0.6);
+        if(climb.getWinchPos() < Constants.winchContractPos){
+          isClimbExtendedlvl1 = true;
+          climb.setWinchSpeed(-0.3, -0.3);
           climb.setPositionArm(0);
-          climb.setWinchSpeed(-0.1, -0.1);
-          if(climb.getWinchPos()< Constants.winchContractPos){
+        }
+      }
+    }
+        if(isClimbExtendedlvl1 == true){
+          if(climb.getLimitSwitch()){
             climb.setWinchSpeed(0, 0);
             climb.setPositionHook(1);
-            isClimbExtended = false;
-            climbSequence = 4;
+            climbSequencelvl1 = 4;
+          }else{
+            climb.setWinchSpeed(-0.3, -0.3);
           }
+         
+      }
+    }
+
+    public void armsInlvl2(){
+      if(isClimbExtendedlvl2 == false){
+      if(climbTimer.get() > 0.5){
+        climbTimer.stop();
+        climbTimer.reset();
+        go = true;
+      }
+      if(go){
+      climb.setWinchSpeed(-0.6, -0.6);
+      if(climb.getWinchPos() < Constants.winchContractPos){
+        isClimbExtendedlvl2 = true;
+        climb.setWinchSpeed(-0.3, -0.3);
+        climb.setPositionArm(0);
+        climb.setPositionHook(0);
+      }
+    }
+  }
+      if(isClimbExtendedlvl2 == true){
+        if(climb.getLimitSwitch()){
+          climb.setWinchSpeed(0, 0);
+          climb.setPositionHook(1);
+          climbSequencelvl2 = 4;
+        }else{
+          climb.setWinchSpeed(-0.3, -0.3);
         }
+       
+    }
+  }
+
+  public void armsInlvl3(){
+    if(isClimbExtendedlvl3 == false){
+    if(climbTimer.get() > 0.5){
+      climbTimer.stop();
+      climbTimer.reset();
+      go = true;
+    }
+    if(go){
+    climb.setWinchSpeed(-0.6, -0.6);
+    intakeUp();
+    if(climb.getWinchPos() < Constants.winchContractPos){
+      isClimbExtendedlvl3 = true;
+      climb.setWinchSpeed(-0.3, -0.3);
+      climb.setWinchSpeed(0, 0);
+      climbSequencelvl3 = 4;
+    }
+  }
+}
+
+}
+
+      public void enableTravClimblvl1(){
+        enableTravlvl1 = true;
+      }
+      public void enableTravClimblvl2(){
+        enableTravlvl2 = true;
+      }
+      public void enableTravClimblvl3(){
+        enableTravlvl3 = true;
       }
 
-      public void enableTravClimb(){
-        enableTrav = true;
-      }
-
-      public void traversalClimb(){
-        if(enableTrav){
-          if(climbSequence == 1){
-            prepCLimb();
-          }else if(climbSequence == 2){
-            extendArms();
-          }else if(climbSequence == 3){
-            armsIn();
-          }else if(climbSequence == 4){
-            enableTrav = false;
-            climbSequence = 1;
+      public void traversalClimblvl1(){
+        if(enableTravlvl1){
+          if(climbSequencelvl1 == 1){
+            prepCLimblvl1();
+          }else if(climbSequencelvl1 == 2){
+            extendArmslvl1();
+          }else if(climbSequencelvl1 == 3){
+            armsInlvl1();
+          }else if(climbSequencelvl1 == 4){
+            enableTravlvl1 = false;
+            climbSequencelvl1 = 1;
+            go = false;
           }
         }
         
       }
+      public void traversalClimblvl2(){
+        if(enableTravlvl2){
+          if(climbSequencelvl2 == 1){
+            prepCLimblvl2();
+          }else if(climbSequencelvl2 == 2){
+            extendArmslvl2();
+          }else if(climbSequencelvl2 == 3){
+            armsInlvl2();
+          }else if(climbSequencelvl2 == 4){
+            enableTravlvl2 = false;
+            climbSequencelvl2 = 1;
+            go = false;
+          }
+        }
+        
+      }
+      public void traversalClimblvl3(){
+        if(enableTravlvl3){
+          if(climbSequencelvl3 == 1){
+            prepCLimblvl3();
+          }else if(climbSequencelvl3 == 2){
+            extendArmslvl3();
+          }else if(climbSequencelvl3 == 3){
+            armsInlvl3();
+          }else if(climbSequencelvl3 == 4){
+            enableTravlvl3 = false;
+            climbSequencelvl3 = 1;
+            go = false;
+          }
+        }
+        
+      }
+      public boolean fallingEdgeUpper(){
+        return index.fallingEdgeUpper();
+      }
 
       public void periodic(){
-          intakeControl();
           index.inTransit();
-          traversalClimb();
+          //Climbing
+          traversalClimblvl1();
+          traversalClimblvl2();
+          traversalClimblvl3();
+          //if(!(climbSequencelvl3 == 1 || climbSequencelvl3 == 2 || climbSequencelvl3 == 3)){
+            climb.resetWinchPos();
+          //}
+          //hood.bangBang();
+          SmartDashboard.putNumber("camera", lime.calcDistance());
+          SmartDashboard.putNumber("winch", climb.getWinchPos());
+          SmartDashboard.putBoolean("cylinders", climb.isArmsExtended());
+          SmartDashboard.putBoolean("limit", climb.getLimitSwitch());
       }
 }

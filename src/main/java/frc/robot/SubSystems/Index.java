@@ -21,6 +21,8 @@ public class Index extends SubsystemBase {
 
     //Previous photoeye state
     private boolean prevPhotoeye = false;
+    private boolean prevUpperPhotoeye = false;
+
     public static Index get_Instance(){
     
         if(index == null){
@@ -34,11 +36,11 @@ public class Index extends SubsystemBase {
         iMotor = new TalonFX(Constants.indexMotor);
       }
       public boolean getUpperPhotoeye(){
-        return upperPhotoeye.get();
+        return !upperPhotoeye.get();
       }
 
       public boolean getLowerPhotoeye(){
-        return lowerPhotoeye.get();
+        return !lowerPhotoeye.get();
       }
 
       public void setSpeed(double speed){
@@ -57,5 +59,11 @@ public class Index extends SubsystemBase {
           ballInTransit = false;
         }
         prevPhotoeye = getLowerPhotoeye();
+      }
+
+      public boolean fallingEdgeUpper(){
+        boolean bool  = (!getUpperPhotoeye() && prevPhotoeye);
+        prevUpperPhotoeye = getUpperPhotoeye();
+        return bool;
       }
 }

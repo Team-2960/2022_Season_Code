@@ -14,13 +14,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 import com.ctre.phoenix.CANifier;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import frc.robot.Constants;
 
 public class Swerve {
-  private CANSparkMax driveMotor;
-  private CANSparkMax angleMotor;
+  private TalonFX driveMotor;
+  private TalonFX angleMotor;
   private PIDController anglePID;
   private PIDController drivePID;
   private CANCoder angleEncoder;
@@ -33,21 +35,22 @@ public class Swerve {
         angleEncoder.configMagnetOffset(offSet);
         drivePID = pidA;
         anglePID = pidD;
-        driveMotor = new CANSparkMax(motorIdDrive, MotorType.kBrushless);
-        angleMotor = new CANSparkMax(motorIdAngle, MotorType.kBrushless);
+        driveMotor = new TalonFX(motorIdDrive);
+        angleMotor = new TalonFX(motorIdAngle);
+
     }
 
     public void setSpeed(double driveSpeed, double angleSpeed){
-        driveMotor.set(driveSpeed);
-        angleMotor.set(angleSpeed);
+        driveMotor.set(ControlMode.PercentOutput, driveSpeed);
+        angleMotor.set(ControlMode.PercentOutput, angleSpeed);
     }
 
     public void setAngleSpeed(double angleSpeed){
-        angleMotor.set(angleSpeed);
+        angleMotor.set(ControlMode.PercentOutput, angleSpeed);
     }
 
     public void setDriveSpeed(double driveSpeed){
-        driveMotor.set(driveSpeed);
+        driveMotor.set(ControlMode.PercentOutput, driveSpeed);
     }
     public double drivePIDCalc(double rate){
         double calcDriveSpeed = 0;
@@ -100,7 +103,8 @@ public class Swerve {
     public double getEncoder(){
         return angleEncoder.getAbsolutePosition();
     }
-    public SwerveModuleState getState(){
-        return new SwerveModuleState(driveMotor.getEncoder().getVelocity()*0.31918645197/(60*6.86), new Rotation2d(getEncoder()*Math.PI/180));
+    public double getDriveEncoder(){
+        return driveMotor.getSelectedSensorPosition();
     }
+
 }

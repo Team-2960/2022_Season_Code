@@ -9,7 +9,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.util.sendable.Sendable;
 import frc.robot.Auton.*;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.Compressor;
 
 
 
@@ -36,6 +39,8 @@ public class Robot extends TimedRobot {
   public OI oi;
   private Command autonCommand = null;
   private PowerDistribution pdp;
+  private Compressor comp;
+
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -46,6 +51,7 @@ public class Robot extends TimedRobot {
     oi = new OI();
     pdp = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
     pdp.setSwitchableChannel(true);
+    comp = new Compressor(20, PneumaticsModuleType.CTREPCM);
   }
 
   @Override
