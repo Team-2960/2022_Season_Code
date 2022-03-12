@@ -5,10 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
-
-
-
-
+import frc.robot.Auton.shoot;
 //IMPORT ALL OF THE SUBSYSTEMS
 import frc.robot.SubSystems.*;
 
@@ -36,6 +33,7 @@ public class MegaShooter2PointO extends SubsystemBase {
     boolean enableTravlvl2 = false;
     boolean enableTravlvl3 = false;
     boolean go = false;
+    boolean enableReset = false;
 
     //Intake VARS
     boolean isIntakeOut = false;
@@ -64,12 +62,12 @@ public class MegaShooter2PointO extends SubsystemBase {
       }
       public void indexing(){
         if(index.isInTransit() || (!index.getUpperPhotoeye() && index.getLowerPhotoeye()) || shooting){
-          index.setSpeed(-0.25);
+          index.setSpeed(-0.75);
         }else{
           index.setSpeed(0);
         }
         if((!index.getUpperPhotoeye() && index.getLowerPhotoeye()) || (intakeEnabled && !(index.getLowerPhotoeye() && index.getUpperPhotoeye()))){//!(index.getLowerPhotoeye() && (index.isInTransit() || index.getUpperPhotoeye()))
-          intake.setSpeed(-0.6);
+          intake.setSpeed(-0.4);
         }else{
           intake.setSpeed(0);
         }
@@ -95,8 +93,23 @@ public class MegaShooter2PointO extends SubsystemBase {
           shooting = false;
         }
       }
+
+      public void shoot(double velocity){
+        setShooterRPM(velocity, velocity);
+        shootOn();
+      }
+      public void shootCamera(){
+        shoot(hood.RPMCalc(lime.calcDistance()));
+        shootOn();
+      }
+      public void RPMCamera(){
+        megashooter2pointo.setShooterRPM(hood.RPMCalc(lime.calcDistance()), hood.RPMCalc(lime.calcDistance()));
+
+      }
+
       public void shootOff(){
         shooting = false;
+        setShooterRPM(0, 0);
       }
 
       public void intakeUp(){
@@ -115,7 +128,7 @@ public class MegaShooter2PointO extends SubsystemBase {
           climb.setWinchSpeed(0, 0);
           climbSequencelvl1 =2;
         }else{
-          climb.setWinchSpeed(0.6, 0.6);
+          climb.setWinchSpeed(0.9, 0.9);
         }
       }
 
@@ -124,7 +137,7 @@ public class MegaShooter2PointO extends SubsystemBase {
             climb.setWinchSpeed(0, 0);
             climbSequencelvl2 =2;
           }else{
-            climb.setWinchSpeed(0.6, 0.6);
+            climb.setWinchSpeed(0.9, 0.9);
           }
         }
 
@@ -133,7 +146,7 @@ public class MegaShooter2PointO extends SubsystemBase {
               climb.setWinchSpeed(0, 0);
               climbSequencelvl3 =2;
             }else{
-              climb.setWinchSpeed(0.6, 0.6);
+              climb.setWinchSpeed(0.9, 0.9);
             }
           }
       
@@ -172,7 +185,7 @@ public class MegaShooter2PointO extends SubsystemBase {
           go = true;
         }
         if(go){
-        climb.setWinchSpeed(-0.6, -0.6);
+        climb.setWinchSpeed(-0.8, -0.8);
         if(climb.getWinchPos() < Constants.winchContractPos){
           isClimbExtendedlvl1 = true;
           climb.setWinchSpeed(-0.3, -0.3);
@@ -200,7 +213,7 @@ public class MegaShooter2PointO extends SubsystemBase {
         go = true;
       }
       if(go){
-      climb.setWinchSpeed(-0.6, -0.6);
+      climb.setWinchSpeed(-0.8, -0.8);
       if(climb.getWinchPos() < Constants.winchContractPos){
         isClimbExtendedlvl2 = true;
         climb.setWinchSpeed(-0.3, -0.3);
@@ -229,7 +242,7 @@ public class MegaShooter2PointO extends SubsystemBase {
       go = true;
     }
     if(go){
-    climb.setWinchSpeed(-0.6, -0.6);
+    climb.setWinchSpeed(-0.8, -0.8);
     intakeUp();
     if(climb.getWinchPos() < Constants.winchContractPos){
       isClimbExtendedlvl3 = true;
@@ -300,6 +313,26 @@ public class MegaShooter2PointO extends SubsystemBase {
         }
         
       }
+      public void resetClimb(){
+        if(enableReset){
+          climb.setPositionHook(0);
+          climb.setPositionArm(0);
+
+          if(!climb.getLimitSwitch()){
+            climb.setWinchSpeed(-0.3, -0.3);
+          }
+          else{
+            climb.setWinchSpeed(0, 0);
+            enableReset = false;
+          }
+        }
+      }
+      public void enableReset(){
+        enableReset = true;
+      }
+      public void disableReset(){
+        enableReset = false;
+      }
       public boolean fallingEdgeUpper(){
         return index.fallingEdgeUpper();
       }
@@ -308,16 +341,23 @@ public class MegaShooter2PointO extends SubsystemBase {
           indexing();
           index.inTransit();
           //Climbing
-          traversalClimblvl1();
-          traversalClimblvl2();
-          traversalClimblvl3();
+          if(enableTravlvl1){
+            traversalClimblvl1();
+          }else if(enableTravlvl2){
+            traversalClimblvl2();
+          }else if(enableTravlvl3){
+            traversalClimblvl3();
+          }else if(enableReset){
+            resetClimb();
+          }
           //if(!(climbSequencelvl3 == 1 || climbSequencelvl3 == 2 || climbSequencelvl3 == 3)){
             climb.resetWinchPos();
           //}
-          //hood.bangBang();
+          hood.calcWheelSpeed();
+          SmartDashboard.putBoolean("shooting", shooting);
+          megashooter2pointo.hood.printRPM();
           SmartDashboard.putNumber("camera", lime.calcDistance());
           SmartDashboard.putNumber("winch", climb.getWinchPos());
-          SmartDashboard.putBoolean("cylinders", climb.isArmsExtended());
-          SmartDashboard.putBoolean("limit", climb.getLimitSwitch());
+          SmartDashboard.putBoolean("angle", climb.isArmsExtended());
       }
 }

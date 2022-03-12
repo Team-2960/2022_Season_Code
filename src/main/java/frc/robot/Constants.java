@@ -14,12 +14,21 @@ public class Constants{
   
 
     //Shooter Constants
-    public static double uWP = .3;
-    public static double uWI = 0;
-    public static double uWD = 0;
-    public static double lWP = .3;
-    public static double lWI = 0;
-    public static double lWD = 0;
+    public static double uWP = 0.550585/16;//0.68585
+    public static double uWI = 4.7529 * Math.pow(10, -5);
+    public static double uWD = 2.1277* Math.pow(10, -6);
+    public static double lWP = 0.550587/16;//0.51587
+    public static double lWI = 4.7532*Math.pow(10, -5);
+    public static double lWD = 2 * Math.pow(10, -6);
+    public static double lowGoalRPM = 6500;
+    public static double edgeTarmacRPM = 11000;
+
+    public static double uWPP = 0.0001;//0.68585
+    public static double uWII = 0;
+    public static double uWDD = 0;
+    public static double lWPP = 0.0001;//0.51587
+    public static double lWII = 0;
+    public static double lWDD = 0;
 
     public static double uTarmacRPM = 1;
     public static double lTarmacRPM = 1;
@@ -35,25 +44,25 @@ public class Constants{
     public static double dPFL = 1;
     public static double dIFL = 1;
     public static double dDFL = 1;
-    public static double aPFL = 0.005;
+    public static double aPFL = 0.007;
     public static double aIFL = 0;
     public static double aDFL = 0;
     public static double dPFR = 1;
     public static double dIFR = 1;
     public static double dDFR = 1;
-    public static double aPFR = 0.005;
+    public static double aPFR = 0.007;
     public static double aIFR = 0;
     public static double aDFR = 0;
     public static double dPBL = 1;
     public static double dIBL = 1;
     public static double dDBL = 1;
-    public static double aPBL = 0.005;
+    public static double aPBL = 0.007;
     public static double aIBL = 0;
     public static double aDBL = 0.000000;
     public static double dPBR = 1;
     public static double dIBR = 1;
     public static double dDBR = 1;
-    public static double aPBR = 0.005;
+    public static double aPBR = 0.007;
     public static double aIBR = 0;
     public static double aDBR = 0;
     public static double flHome = -6.5;//-7.27;
@@ -75,10 +84,10 @@ public class Constants{
     public static int encoderIdBackRight = 10;
 
     //toAnglePID
-    public static double kPTA = 1;
+    public static double kPTA = 0.016;
     public static double kITA = 0;
     public static double kDTA = 0;
-    public static double angleTolerance = 5;
+    public static double angleTolerance = 15;
 
 
 
@@ -103,6 +112,8 @@ public class Constants{
     public final static int mClimbL = 13;
     public final static int mClimbR = 14;
     public final static double winchExtendPos = 425000;
+    public final static double winchExtendLimit = 490000;
+
     public final static double winchContractPos = 100000;
     public final static int rHallEffectSensor = 2;
     public final static int lHallEffectSensor = 3;
@@ -119,9 +130,9 @@ public class Constants{
     public final static int indexMotor = 15;
 
     //Limelight Constants
-    public final static double h1 = 31;//HEIGHT OF LIMELIGHT
-    public final static double a1 = 40;//ANGLE FROM HORIZONTAL
-    public final static double h2 = 101;//HEIGHT OF TARGET
+    public final static double h1 = 32;//HEIGHT OF LIMELIGHT
+    public final static double a1 = 26;//ANGLE FROM HORIZONTAL
+    public final static double h2 = 104;//HEIGHT OF TARGET
 
     //AUTON CONSTANTS
     public final static double autoSpeed = 0.3;

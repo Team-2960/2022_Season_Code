@@ -13,14 +13,16 @@ public class modAngle extends CommandBase{
     private boolean isFinish = false;
     private double theta;
     private Drive drive;
-    Timer timer = new Timer();
-    public modAngle(double theta){
-        this.theta = theta;
-        drive = drive.get_Instance();
+    Timer timer;
+    public modAngle(double theta1){
+        theta = theta1+90;
+        drive = Drive.get_Instance();
+        timer = new Timer();
     }
 
     @Override
     public void initialize() {
+        timer.start();
     }
 
     /**
@@ -36,13 +38,19 @@ public class modAngle extends CommandBase{
      */
     @Override
     public boolean isFinished() {
-        return timer.get() > 0.3;
+        return timer.get() > 1;
     }
 
     @Override
     public void execute() {
-        drive.setVector(theta, 0 ,0);
-        drive.periodic();
+        drive.backLeftSwerveAngle = theta;
+        drive.backRightSwerveAngle = theta;
+        drive.frontLeftSwerveAngle = theta;
+        drive.frontRightSwerveAngle = theta;
+        drive.frontLeftSwerveSpeed = 0;
+        drive.frontRightSwerveSpeed = 0;
+        drive.backLeftSwerveSpeed = 0;
+        drive.backRightSwerveSpeed = 0;
     }
 
     
@@ -51,5 +59,7 @@ public class modAngle extends CommandBase{
      */
     @Override
     public void end(boolean interrupte) {
+        System.out.println("fin");
     }
+    
 }

@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
@@ -58,6 +59,7 @@ public class Drive extends SubsystemBase {
     public double maxTurnSpeed;
     public double angleRateVector;
     double targetAngleRate;
+    
     public static Drive get_Instance(){
     
         if(drive == null){
@@ -72,6 +74,7 @@ public class Drive extends SubsystemBase {
          gyro = new AnalogGyro(0);
 
          angleRatePID = new PIDController(Constants.aRP, Constants.aRI, Constants.aRD);
+
          toAnglePID = new PIDController(Constants.kPTA, Constants.kITA, Constants.kDTA);
          PIDDFL = new PIDController(Constants.dPFL, Constants.dIFL, Constants.dDFL);
          PIDAFL = new PIDController(Constants.aPFL, Constants.aIFL, Constants.aDFL);
@@ -95,6 +98,7 @@ public class Drive extends SubsystemBase {
        m_odometry = new SwerveDriveOdometry(m_kinematics,
         new Rotation2d(gyro.getAngle()), new Pose2d(0, 0, new Rotation2d()));  
       }
+      
 
       public void homeSwerve(){
         drive.setVector(180, 0, 0);
@@ -131,25 +135,34 @@ public class Drive extends SubsystemBase {
         }
         //SET ALL OF THE NUMBERS FOR THE SWERVE VARS
       }
+      public void breakMode(){
+        frontRight.setDriveModeBrake();
+        frontLeft.setDriveModeBrake();
+        backRight.setDriveModeBrake();
+        backLeft.setDriveModeBrake();
+      }
+      public void coastMode(){
+        frontRight.setDriveModeCoast();
+        frontLeft.setDriveModeCoast();
+        backRight.setDriveModeCoast();
+        backLeft.setDriveModeCoast();
+      }
       public void setVector(double angle, double mag, double rotationVectorX){
-        
+        SmartDashboard.putNumber("anlge 12", angle);
         double angleVX = Math.cos((angle-gyroAngle)*Math.PI/180) *180/Math.PI * mag;//TODO CHECK about RAD VS DEG
         double angleVY = Math.sin((angle-gyroAngle)*Math.PI/180) *180/Math.PI * mag;
         targetAngleRate = rotationVectorX;
         setSwerve(angleVX, angleVY, angleRateVector);
-        
-
       } 
       public void sanitizeAngle(){
         gyroAngle = navX.getFusedHeading();
         SmartDashboard.putNumber("fused heading", gyroAngle);
-        /*while(gyroAngle > 360){
+        while(gyroAngle > 360){
           gyroAngle = gyroAngle - 360;
         }
         while(gyroAngle < 0){
           gyroAngle = gyroAngle + 360;
-        }*/
-
+        }
       }
       
 
@@ -161,8 +174,9 @@ public class Drive extends SubsystemBase {
         target = target * 30;//Takes in value -1 - 1 and turns it into max / min 30/-30
         angleRateVector = -1* angleRatePID.calculate(navX.getRate(), target);
       }
+      
       public double anglePID(double target){
-        //Takes in value -1 - 1 and turns it into max / min 30/-30
+        SmartDashboard.putNumber("calculated", toAnglePID.calculate(gyroAngle, target));
         return toAnglePID.calculate(gyroAngle, target);
       }
 
@@ -177,9 +191,9 @@ public class Drive extends SubsystemBase {
         //System.out.println(backRight.getEncoder() + "BR");
         */sanitizeAngle();
         angleRatePID(targetAngleRate);/*
-        SmartDashboard.putNumber("input", navX.getFusedHeading());
-        SmartDashboard.putNumber("output", navX.getRate());
-        SmartDashboard.putNumber("c", targetAngleRate/navX.getRate());
+        //SmartDashboard.putNumber("input", navX.getFusedHeading());
+        //SmartDashboard.putNumber("output", navX.getRate());
+        //SmartDashboard.putNumber("c", targetAngleRate/navX.getRate());
         /*System.out.println(backRightSwerveAngle);
         System.out.println(backRightSwerveSpeed);
         System.out.println(backLeftSwerveAngle);
@@ -201,7 +215,6 @@ public class Drive extends SubsystemBase {
         SmartDashboard.putNumber("br", backRight.getEncoder());
         SmartDashboard.putNumber("bl", backLeft.getEncoder());
         SmartDashboard.putNumber("fr angle", frontRightSwerveAngle);
-        SmartDashboard.putNumber("fl angle", frontLeftSwerveAngle);
 
 
       }

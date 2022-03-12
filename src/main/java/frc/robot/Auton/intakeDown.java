@@ -3,26 +3,33 @@ package frc.robot.Auton;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.SubSystems.Drive;
 import frc.robot.SubSystems.MegaShooter2PointO;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.*;
 
 
-public class shoot extends CommandBase{
-
-    public  MegaShooter2PointO megashooter2pointo;
+public class intakeDown extends CommandBase{
+    //shoot the ball
+    
+    
     private boolean isFinish = false;
-    private int numBalls = 0;
-    private int totalBalls;
-    public shoot(int balls, double speed){
-        megashooter2pointo = MegaShooter2PointO.get_Instance();
-        megashooter2pointo.setShooterRPM(speed, speed);
-        totalBalls = balls;
+    private double theta;
+    private Drive drive;
+    private TrapezoidProfile trapProfile;
+    private MegaShooter2PointO mega;
+    private double wait;
+    private double intake;
+
+    Timer timer;
+    public intakeDown(){
+        mega = MegaShooter2PointO.get_Instance();
+        timer = new Timer();
+        timer.start();
+        
     }
 
     @Override
     public void initialize() {
-        super.initialize();
     }
 
     /**
@@ -38,16 +45,12 @@ public class shoot extends CommandBase{
      */
     @Override
     public boolean isFinished() {
-        return (numBalls == totalBalls);
+        return timer.get() > 0.5; //|| trapProfile.totalTime() < timer.get();
     }
 
     @Override
     public void execute() {
-        megashooter2pointo.shootOn();
-        if(megashooter2pointo.fallingEdgeUpper()){
-            numBalls++;
-        }
-        SmartDashboard.putNumber("numballs", numBalls);
+        mega.intakeDown();
     }
 
     
@@ -56,8 +59,5 @@ public class shoot extends CommandBase{
      */
     @Override
     public void end(boolean interrupte) {
-        megashooter2pointo.shootOff();
-        megashooter2pointo.setShooterRPM(0, 0);
-
     }
 }

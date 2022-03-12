@@ -1,6 +1,7 @@
 package frc.robot.SubSystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -30,10 +31,12 @@ public class Index extends SubsystemBase {
         } 
         return index;
       }
+
       Index(){
         lowerPhotoeye = new DigitalInput(Constants.photoeye1);
         upperPhotoeye = new DigitalInput(Constants.photoeye2);
         iMotor = new TalonFX(Constants.indexMotor);
+        iMotor.setNeutralMode(NeutralMode.Brake);
       }
       public boolean getUpperPhotoeye(){
         return !upperPhotoeye.get();
@@ -62,7 +65,7 @@ public class Index extends SubsystemBase {
       }
 
       public boolean fallingEdgeUpper(){
-        boolean bool  = (!getUpperPhotoeye() && prevPhotoeye);
+        boolean bool  = (!getUpperPhotoeye() && prevUpperPhotoeye);
         prevUpperPhotoeye = getUpperPhotoeye();
         return bool;
       }

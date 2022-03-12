@@ -45,6 +45,11 @@ public class Climb extends SubsystemBase {
         sClimbHook = new DoubleSolenoid(20, PneumaticsModuleType.CTREPCM, Constants.climbHookSolenoid1, Constants.climbHookSolenoid2);
         mLeftClimb = new TalonFX(Constants.mClimbL);
         mRightClimb = new TalonFX(Constants.mClimbR);
+        mLeftClimb.configForwardSoftLimitEnable(true);
+        mRightClimb.configForwardSoftLimitEnable(true);
+        mLeftClimb.configForwardSoftLimitThreshold(Constants.winchExtendLimit);
+        mRightClimb.configForwardSoftLimitThreshold(Constants.winchExtendLimit);
+        mRightClimb.setInverted(true);
         rHallEffect = new DigitalInput(Constants.rHallEffectSensor);
         lHallEffect = new DigitalInput(Constants.lHallEffectSensor);
         limitSwitch = new DigitalInput(Constants.limitSwitchPort);
@@ -71,8 +76,12 @@ public class Climb extends SubsystemBase {
       }
 
       public void setWinchSpeed(double left, double right){
+        if((limitSwitch.get() && (left > 0 || right > 0))){
+          mLeftClimb.set(ControlMode.PercentOutput, 0);
+          mRightClimb.set(ControlMode.PercentOutput, 0);
+        }
         mLeftClimb.set(ControlMode.PercentOutput, left);
-        mRightClimb.set(ControlMode.PercentOutput, -right);
+        mRightClimb.set(ControlMode.PercentOutput, right);
       }
 
       public double getWinchPos(){
@@ -93,6 +102,7 @@ public class Climb extends SubsystemBase {
       public void resetWinchPos(){
         if(limitSwitch.get()){
           mLeftClimb.setSelectedSensorPosition(0); 
+          mRightClimb.setSelectedSensorPosition(0); 
         }
       }
 }

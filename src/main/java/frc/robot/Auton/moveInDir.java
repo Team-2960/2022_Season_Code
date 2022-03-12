@@ -3,6 +3,7 @@ package frc.robot.Auton;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.SubSystems.Drive;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.*;
 
 
@@ -13,14 +14,19 @@ public class moveInDir extends CommandBase{
     private double distance;
     private double theta;
     private Drive drive;
-    public moveInDir(double distance, double theta){//Distannce in feet
-        this.distance = distance;
-        this.theta = theta;
+    private double speed;
+    public double x = 0;
+    public 
+    moveInDir(double distance, double theta, double speed){//Distannce in feet
+        this.distance = distance * (2048 * 8.16)/(4*Math.PI);
+        this.theta = theta + 90;
+        drive = Drive.get_Instance();
+        this.speed = speed;
+        drive.frontRight.driveMotor.setSelectedSensorPosition(0);
     }
 
     @Override
     public void initialize() {
-        super.initialize();
     }
 
     /**
@@ -36,13 +42,20 @@ public class moveInDir extends CommandBase{
      */
     @Override
     public boolean isFinished() {
-        return drive.frontRight.getDriveEncoder() * Constants.sensorConv > distance;
+        return Math.abs(drive.frontRight.getDriveEncoder() * Constants.sensorConv) > distance;
     }
 
     @Override
     public void execute() {
-        drive.setVector(theta, Constants.autoSpeed, 0);
-        drive.periodic();
+        drive.backLeftSwerveAngle = theta;
+        drive.backRightSwerveAngle = theta;
+        drive.frontLeftSwerveAngle = theta;
+        drive.frontRightSwerveAngle = theta;
+        drive.frontLeftSwerveSpeed = speed * -75;
+        drive.frontRightSwerveSpeed = speed * -75;
+        drive.backLeftSwerveSpeed = speed * -75;
+        drive.backRightSwerveSpeed = speed * -75;
+        SmartDashboard.putNumber("fr ticks", drive.frontRight.getDriveEncoder());
     }
 
     
@@ -51,5 +64,9 @@ public class moveInDir extends CommandBase{
      */
     @Override
     public void end(boolean interrupte) {
+        drive.frontLeftSwerveSpeed = 0;
+        drive.frontRightSwerveSpeed = 0;
+        drive.backLeftSwerveSpeed = 0;
+        drive.backRightSwerveSpeed = 0;
     }
 }

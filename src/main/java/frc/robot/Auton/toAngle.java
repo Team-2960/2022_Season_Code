@@ -2,6 +2,7 @@ package frc.robot.Auton;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.SubSystems.Drive;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.*;
 
@@ -13,10 +14,26 @@ public class toAngle extends CommandBase{
     private boolean isFinish = false;
     private double theta;
     private Drive drive;
-    Timer timer = new Timer();
+    private TrapezoidProfile trapProfile;
+
+    Timer timer;
     public toAngle(double theta){
-        this.theta = theta;
-        drive = drive.get_Instance();
+        
+        drive = Drive.get_Instance();
+        this.theta = theta + drive.navX.getFusedHeading();
+        while(this.theta > 360){
+          this.theta = this.theta - 360;
+        }
+        while(this.theta < 0){
+          this.theta = this.theta + 360;
+        }
+        timer = new Timer();
+        timer.start();
+        trapProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(1, 1),
+                                           new TrapezoidProfile.State(theta, 0),
+                                           new TrapezoidProfile.State(drive.navX.getFusedHeading(), 0));
+
+
     }
 
     @Override
@@ -36,11 +53,12 @@ public class toAngle extends CommandBase{
      */
     @Override
     public boolean isFinished() {
-        return Math.abs(theta - drive.gyroAngle) < Constants.angleTolerance;
+        return Math.abs(theta - drive.gyroAngle) < Constants.angleTolerance; //|| trapProfile.totalTime() < timer.get();
     }
 
     @Override
     public void execute() {
+        var setpoint = trapProfile.calculate(timer.get());
         drive.setVector(0, 0, drive.anglePID(theta));
         drive.periodic();
     }
@@ -51,5 +69,8 @@ public class toAngle extends CommandBase{
      */
     @Override
     public void end(boolean interrupte) {
+        drive.setVector(0, 0, 0);
+        drive.periodic();
+
     }
 }

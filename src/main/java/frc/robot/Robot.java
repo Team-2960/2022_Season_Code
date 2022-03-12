@@ -17,6 +17,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import frc.robot.Auton.*;
 import frc.robot.Constants;
 import frc.robot.SubSystems.*;
+import frc.robot.Util.LEDs;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +41,8 @@ public class Robot extends TimedRobot {
   private Command autonCommand = null;
   private PowerDistribution pdp;
   private Compressor comp;
+  private LEDs leds;
+  private Drive drive;
 
 
   /**
@@ -52,6 +55,8 @@ public class Robot extends TimedRobot {
     pdp = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
     pdp.setSwitchableChannel(true);
     comp = new Compressor(20, PneumaticsModuleType.CTREPCM);
+    leds = new LEDs();
+    drive = Drive.get_Instance();
   }
 
   @Override
@@ -60,7 +65,8 @@ public class Robot extends TimedRobot {
   }
 
   public void autonomousInit() {
-    autonCommand = new autonn();
+    drive.breakMode();
+    autonCommand = new oneBallAuton();
     if(autonCommand != null) autonCommand.schedule();
   }
 
@@ -71,11 +77,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    drive.coastMode();
   }
 
   @Override
   public void teleopPeriodic() {
-    oi.periodic();
+    oi.oiRun();
   }
 
   @Override

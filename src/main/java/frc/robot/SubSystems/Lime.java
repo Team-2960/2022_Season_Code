@@ -19,6 +19,6 @@ public class Lime {
         return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
     }
     public double calcDistance(){
-        return (Constants.h2-Constants.h1)/Math.tan((Constants.a1 - NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0))*Math.PI/180);
+        return (Constants.h2-Constants.h1)/Math.tan((Constants.a1 - NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0))*Math.PI/180)-31;
     }
 }

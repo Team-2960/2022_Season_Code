@@ -142,7 +142,7 @@ public class OI extends SubsystemBase {
         done = Math.abs(done -360);
         return done;
     }
-    public void periodic(){
+    public void oiRun(){
         //PERIODICS
         drive.periodic();
        SmartDashboard.putNumber("distance", lime.calcDistance());
@@ -152,14 +152,26 @@ public class OI extends SubsystemBase {
         if(driverControl.getRawButton(1)){
             drive.setVector(0,0,0);
         }
-        else *//*if(cameraTracking()){
-            drive.setVector(driveAngle(driverControl.getRawAxis(0), driverControl.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(driverControl.getRawAxis(0)), 2)+Math.pow(Math.abs(driverControl.getRawAxis(1)), 2)), lime.getHorOffset()/-10);
-        }*/
-        //else{
+        else */if(cameraTracking()){
+            drive.setVector(driveAngle(driverControl.getRawAxis(0), driverControl.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(driverControl.getRawAxis(0)), 2)+Math.pow(Math.abs(driverControl.getRawAxis(1)), 2)), -0.1 * lime.getHorOffset());
+        }
+        else{
             drive.setVector(driveAngle(driverControl.getRawAxis(0), driverControl.getRawAxis(1)), Math.sqrt(Math.pow(Math.abs(driverControl.getRawAxis(0)), 2)+Math.pow(Math.abs(driverControl.getRawAxis(1)), 2)), driverControl.getRawAxis(4)*2);
-        //}
+        }
         
         //System.out.println(lime.getHorOffset());
+        
+        if(shoot()){
+            megashooter2pointo.shoot(Constants.edgeTarmacRPM);
+            //megashooter2pointo.shootCamera();
+        }else if(shootLow()){
+            megashooter2pointo.shoot(Constants.lowGoalRPM);
+        }else if(rampUp()){
+            megashooter2pointo.setShooterRPM(10500, 10500);
+        }
+        else{
+            megashooter2pointo.shootOff();
+        }
         
         //INDEX AND INTAKE
         if(intake()){
@@ -168,66 +180,30 @@ public class OI extends SubsystemBase {
         else{
             megashooter2pointo.intakeOff();
         }
-        /*
-        if(driverControl.getRawButton(5)){
-            //megashooter2pointo.shoot();
-            megashooter2pointo.setSpeed(0.3);
-                megashooter2pointo.intake.setSpeed(-0.3);
-                megashooter2pointo.index.setSpeed(-0.3);
-        }
- else if(intake()){
-    megashooter2pointo.setSpeed(0.5);
-    megashooter2pointo.intake.setSpeed(-0.5);
-    megashooter2pointo.index.setSpeed(-0.5);
-        }else{
-            megashooter2pointo.setSpeed(0);
-            megashooter2pointo.intake.setSpeed(-0);
-            megashooter2pointo.index.setSpeed(-0);
-
-        }
-        *//*
-        if(driverControl.getPOV() == 90){
-        if(driverControl.getRawButton(7)){
-            megashooter2pointo.climb.setWinchSpeed(0.4, 0.4);
-        }
-        else if(driverControl.getRawButton(8)){
-            megashooter2pointo.climb.setWinchSpeed(-0.4, -0.4);
-        }else{
-            megashooter2pointo.climb.setWinchSpeed(0, 0);
-        }
-    }
+        
         if(driverControl.getRawButton(5)){
             megashooter2pointo.climb.setPositionArm(1);
         }else if(driverControl.getRawButton(6)){
             megashooter2pointo.climb.setPositionArm(0);
-        }*/
-        if(driverControl.getPOV(0)==0){
+        }
+        if(operatorControl.getPOV(0)==0){
             megashooter2pointo.intakeUp();
-        }else if(driverControl.getPOV(0) == 180){
+        }else if(operatorControl.getPOV(0) == 180){
             megashooter2pointo.intakeDown();
-        }/*
+        }
         
-        if(driverControl.getRawButton(1)){
+        //CLIMB
+        if(climbToLvl1()){
             megashooter2pointo.enableTravClimblvl1();
         }
-        else if(driverControl.getRawButton(2)){
+        else if(climbToLvl2()){
             megashooter2pointo.enableTravClimblvl2();
         }
-        else if(driverControl.getRawButton(3)){
+        else if(climbToLvl3()){
             megashooter2pointo.enableTravClimblvl3();
-        }*/
-        SmartDashboard.putNumber("POV", driverControl.getPOV(0));
-        //CLIMB
-        /*
-        if(prepClimb()){
-            megashooter2pointo.prepCLimb();
-        }else if(extendArms()){
-            megashooter2pointo.extendArms();
-        }else if(climbToLvl1()){
-            megashooter2pointo.armsIn();
-        }else if(traversalClimb()){
-            megashooter2pointo.traversalClimb();
-        }/*/
+        }else if(resetClimb()){
+            megashooter2pointo.enableReset();
+        }
         //TEST OI
 
         //GITHUB??????
@@ -244,33 +220,33 @@ public class OI extends SubsystemBase {
     }
 
     public boolean intake(){
-        return driverControl.getRawAxis(3) >0.3;
+        return driverControl.getRawAxis(3) >0.3 || operatorControl.getRawAxis(2) > 0.3;
     }
 
     //OPERATORS
-    public boolean flipIntake(){
-        return operatorControl.getRawButton(1);
-    }
-
     public boolean shoot(){
-        return operatorControl.getRawButton(2);
-    }
-
-    public boolean prepClimb(){
-        return operatorControl.getRawButton(3);
-    }
-
-    public boolean extendArms(){
-        return operatorControl.getRawButton(4);
+        return operatorControl.getRawAxis(3) > 0.3;
     }
 
     public boolean climbToLvl1(){
-        return operatorControl.getRawButton(5);
+        return operatorControl.getRawButton(1);
     }
 
-    public boolean traversalClimb(){
+    public boolean climbToLvl2(){
+        return operatorControl.getRawButton(2);
+    }
+
+    public boolean climbToLvl3(){
+        return operatorControl.getRawButton(4);
+    }
+
+    public boolean resetClimb(){
+        return driverControl.getRawButton(8);
+    }
+    public boolean rampUp(){
         return operatorControl.getRawButton(6);
     }
-
-
+    public boolean shootLow(){
+        return operatorControl.getRawButton(7);
+    }
 }

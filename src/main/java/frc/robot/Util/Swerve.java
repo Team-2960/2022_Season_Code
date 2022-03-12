@@ -15,13 +15,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import frc.robot.Constants;
 
 public class Swerve {
-  private TalonFX driveMotor;
+  public TalonFX driveMotor;
   private TalonFX angleMotor;
   private PIDController anglePID;
   private PIDController drivePID;
@@ -106,5 +107,10 @@ public class Swerve {
     public double getDriveEncoder(){
         return driveMotor.getSelectedSensorPosition();
     }
-
+    public void setDriveModeBrake(){
+        driveMotor.setNeutralMode(NeutralMode.Brake);
+    }
+    public void setDriveModeCoast(){
+        driveMotor.setNeutralMode(NeutralMode.Coast);
+    }
 }

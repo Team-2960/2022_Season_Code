@@ -17,6 +17,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.BangBangController;
@@ -25,21 +26,22 @@ public class Hood extends SubsystemBase {
     private static final String Controlmode = null;
   private static Hood hood;
 
-    private PIDController upperWheelPID;
+    private SimpleMotorFeedforward upperWheelFF;
     private double upperWheelVel;
     private TalonFX mUpperWheel;
+    private PIDController upperWheelPID;
 
-
-    private PIDController lowerWheelPID;
+    private SimpleMotorFeedforward lowerWheelFF;
     private double lowerWheelVel;
     private TalonFX mLowerWheel;
+    private PIDController lowerWheelPID;
 
     //bang bang controllers
     private BangBangController bangL;
     private BangBangController bangU;
 
 
-    private double shooterTolerance = 0;
+    private double shooterTolerance = 150;
 
     public static Hood get_Instance(){
         if(hood == null){
@@ -51,35 +53,57 @@ public class Hood extends SubsystemBase {
           //Motors
           mUpperWheel = new TalonFX(Constants.mUpperShooter);
           mLowerWheel = new TalonFX(Constants.mLowerShooter);
+          mLowerWheel.setInverted(true);
+          
           //BANG BANG
           bangU = new BangBangController();
           bangL = new BangBangController();
           //PID STUFF
-          lowerWheelPID = new PIDController(Constants.lWP, Constants.lWI, Constants.lWD);
-          upperWheelPID = new PIDController(Constants.uWP, Constants.uWI, Constants.uWD);
+          upperWheelPID = new PIDController(Constants.uWPP, Constants.uWII, Constants.uWDD);
+          lowerWheelPID = new PIDController(Constants.lWPP, Constants.lWII, Constants.lWDD);
+          //FF
+          lowerWheelFF = new SimpleMotorFeedforward(Constants.lWP, Constants.lWI, Constants.lWD);
+          upperWheelFF = new SimpleMotorFeedforward(Constants.uWP, Constants.uWI, Constants.uWD);
       }
       public void setSpeed(double powerL, double powerU){
-        mUpperWheel.set(ControlMode.PercentOutput, -powerU);
+        mUpperWheel.set(ControlMode.PercentOutput, powerU);
         mLowerWheel.set(ControlMode.PercentOutput, powerL);
       }
 
-      public void bangBang(){
-        setSpeed(bangL.calculate(mLowerWheel.getSelectedSensorVelocity(), lowerWheelVel), bangU.calculate(mUpperWheel.getSelectedSensorVelocity(), upperWheelVel));
+      public void hoodPID(){
+        setSpeed(lowerWheelFF.calculate(mLowerWheel.getSelectedSensorVelocity(), lowerWheelVel), upperWheelFF.calculate(mUpperWheel.getSelectedSensorVelocity(), upperWheelVel));
       }
       public void setWheelSpeedVel(double upper, double lower){//IN SENSOR UNITS/ 100 MS
         upperWheelVel = upper;
         lowerWheelVel = lower;
       }
       public void calcWheelSpeed(){
-        setSpeed(upperWheelPID.calculate(mUpperWheel.getSelectedSensorVelocity(), upperWheelVel), lowerWheelPID.calculate(mLowerWheel.getSelectedSensorVelocity(), lowerWheelVel));
+        double upPower = upperWheelFF.calculate(upperWheelVel) + upperWheelPID.calculate( mUpperWheel.getSelectedSensorVelocity(), upperWheelVel);
+        double lowPower = lowerWheelFF.calculate(lowerWheelVel) + lowerWheelPID.calculate(mLowerWheel.getSelectedSensorVelocity(), lowerWheelVel);
+        SmartDashboard.putNumber("loPwr", lowPower);
+        SmartDashboard.putNumber("upPwr", upPower);
+        SmartDashboard.putNumber("up PID", upperWheelPID.calculate( mUpperWheel.getSelectedSensorVelocity(), upperWheelVel));
+        SmartDashboard.putNumber("low PID", lowerWheelPID.calculate( mLowerWheel.getSelectedSensorVelocity(), lowerWheelVel));
+        if(!(upperWheelVel == 0 || lowerWheelVel == 0)){
+          setSpeed(lowPower, upPower);
+        }else{
+          hood.setSpeed(0, 0);
+        }
       }
 
       public boolean isWheelAtVel(){
-        if((Math.abs(upperWheelVel - mUpperWheel.getSelectedSensorVelocity()) < shooterTolerance) && (Math.abs(lowerWheelVel - mLowerWheel.getSelectedSensorVelocity()) < shooterTolerance)){
+        if((Math.abs(upperWheelVel - Math.abs(mUpperWheel.getSelectedSensorVelocity())) < shooterTolerance) && Math.abs((lowerWheelVel - Math.abs(mLowerWheel.getSelectedSensorVelocity()))) < shooterTolerance){
           return true;
         }
         else{
           return false;
         }
+      }
+      public void printRPM(){
+        SmartDashboard.putNumber("up vel", mUpperWheel.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("low vel", mLowerWheel.getSelectedSensorVelocity());
+      }
+      public double RPMCalc(double distance){
+        return (41.666666666) * distance + 7583.33;
       }
 }
