@@ -43,6 +43,7 @@ public class Robot extends TimedRobot {
   private Compressor comp;
   private LEDs leds;
   private Drive drive;
+  private MegaShooter2PointO mega;
 
 
   /**
@@ -57,6 +58,8 @@ public class Robot extends TimedRobot {
     comp = new Compressor(20, PneumaticsModuleType.CTREPCM);
     leds = new LEDs();
     drive = Drive.get_Instance();
+    mega = MegaShooter2PointO.get_Instance();
+
   }
 
   @Override
@@ -87,6 +90,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    mega.disableClimb();
   }
 
   @Override

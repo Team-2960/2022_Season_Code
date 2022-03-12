@@ -345,6 +345,14 @@ public class MegaShooter2PointO extends SubsystemBase {
           }
         }
       }
+      public void disableClimb(){
+        enableTravlvl1 = false;
+        enableTravlvl1 = false;
+        enableTravlvl1 = false;
+        enableReset = false;
+        takeOff = false;
+        climb.setWinchSpeed(0, 0);
+      }
       public void enableReset(){
         enableReset = true;
       }
