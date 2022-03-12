@@ -125,8 +125,11 @@ public class MegaShooter2PointO extends SubsystemBase {
       }
 
 
-      
+      public void armsTakeOff(){
+        
+      }
       public void prepCLimblvl1(){
+      drive.modToAngle(0);
       climb.setPositionHook(0);
         if(climb.getWinchPos() > Constants.winchExtendPos){
           climb.setWinchSpeed(0, 0);
@@ -182,6 +185,7 @@ public class MegaShooter2PointO extends SubsystemBase {
       }
       
       public void armsInlvl1(){
+        drive.modToAngle(0);
         if(isClimbExtendedlvl1 == false){
         if(climbTimer.get() > 0.5){
           climbTimer.stop();
