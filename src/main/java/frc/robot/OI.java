@@ -174,11 +174,14 @@ public class OI extends SubsystemBase {
         }
         
         //INDEX AND INTAKE
-        if(intake()){
+        if(reverseIntake()){
+            megashooter2pointo.isIndexReversed(true);
+        }else if(intake()){
+            megashooter2pointo.isIndexReversed(false);
             megashooter2pointo.intakeOn();
-        }
-        else{
+        }else{
             megashooter2pointo.intakeOff();
+            megashooter2pointo.isIndexReversed(false);
         }
         
         if(driverControl.getRawButton(5)){
@@ -245,6 +248,9 @@ public class OI extends SubsystemBase {
     }
     public boolean rampUp(){
         return operatorControl.getRawButton(6);
+    }
+    public boolean reverseIntake(){
+        return operatorControl.getRawButton(5);
     }
     public boolean shootLow(){
         return operatorControl.getRawButton(7);

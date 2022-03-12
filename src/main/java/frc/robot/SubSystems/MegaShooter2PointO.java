@@ -39,6 +39,7 @@ public class MegaShooter2PointO extends SubsystemBase {
     boolean isIntakeOut = false;
     boolean intakeEnabled = false;
     boolean shooting = false;
+    boolean isIndexReversedVar = false;
 
     //Climb Timer
     Timer climbTimer;
@@ -68,6 +69,8 @@ public class MegaShooter2PointO extends SubsystemBase {
         }
         if((!index.getUpperPhotoeye() && index.getLowerPhotoeye()) || (intakeEnabled && !(index.getLowerPhotoeye() && index.getUpperPhotoeye()))){//!(index.getLowerPhotoeye() && (index.isInTransit() || index.getUpperPhotoeye()))
           intake.setSpeed(-0.4);
+        }else if(isIndexReversedVar){
+          intake.setSpeed(0.4);
         }else{
           intake.setSpeed(0);
         }
@@ -78,8 +81,9 @@ public class MegaShooter2PointO extends SubsystemBase {
       public void intakeOff(){
         intakeEnabled = false;
       }
-
-
+      public void isIndexReversed(boolean state){
+        isIndexReversedVar = state;
+      }
       public void setShooterRPM(double targetUpper, double targetLower){
         hood.setWheelSpeedVel(targetUpper, targetLower);
       }
