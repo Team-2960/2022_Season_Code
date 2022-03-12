@@ -40,6 +40,7 @@ public class MegaShooter2PointO extends SubsystemBase {
     boolean intakeEnabled = false;
     boolean shooting = false;
     boolean isIndexReversedVar = false;
+    boolean takeOff = false;
 
     //Climb Timer
     Timer climbTimer;
@@ -124,9 +125,18 @@ public class MegaShooter2PointO extends SubsystemBase {
         intake.setPosition(0);
       }
 
-
+      public void enableTakeOff(){
+        takeOff = true;
+      }
       public void armsTakeOff(){
-        
+        if(takeOff){
+        if(climb.getWinchPos() < Constants.winchContractPos){
+          climb.setWinchSpeed(0.9, 0.9);
+        }else{
+          climb.setWinchSpeed(0, 0);
+          takeOff = false;
+        }
+      }
       }
       public void prepCLimblvl1(){
       drive.modToAngle(0);
@@ -346,6 +356,7 @@ public class MegaShooter2PointO extends SubsystemBase {
       }
 
       public void periodic(){
+
           indexing();
           index.inTransit();
           //Climbing
@@ -357,6 +368,8 @@ public class MegaShooter2PointO extends SubsystemBase {
             traversalClimblvl3();
           }else if(enableReset){
             resetClimb();
+          }else if(takeOff){
+            armsTakeOff();
           }
           //if(!(climbSequencelvl3 == 1 || climbSequencelvl3 == 2 || climbSequencelvl3 == 3)){
             climb.resetWinchPos();

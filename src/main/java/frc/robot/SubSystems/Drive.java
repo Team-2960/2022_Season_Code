@@ -59,6 +59,7 @@ public class Drive extends SubsystemBase {
     public double maxTurnSpeed;
     public double angleRateVector;
     double targetAngleRate;
+    public boolean angle = false;
     
     public static Drive get_Instance(){
     
@@ -127,6 +128,7 @@ public class Drive extends SubsystemBase {
           frontRightSwerveAngle = Math.atan2(B,C)*180/Math.PI;
           backRightSwerveSpeed =  Math.sqrt(Math.pow(B,2.0) + Math.pow(D,2.0));
           backRightSwerveAngle = Math.atan2(B,D)*180/Math.PI;
+          this.angle = false;
         }else{
           frontLeftSwerveSpeed = 0;
           frontRightSwerveSpeed = 0;
@@ -179,6 +181,14 @@ public class Drive extends SubsystemBase {
         SmartDashboard.putNumber("calculated", toAnglePID.calculate(gyroAngle, target));
         return toAnglePID.calculate(gyroAngle, target);
       }
+      public void modToAngle(double angle){
+        this.angle = true;
+        angle = angle +90;
+        frontLeftSwerveAngle = angle;
+        frontRightSwerveAngle = angle;
+        backLeftSwerveAngle = angle;
+        backRightSwerveAngle = angle;
+      }
 
       
       public void periodic(){
@@ -206,10 +216,19 @@ public class Drive extends SubsystemBase {
         //values as the robot turns clockwise. This is not standard convention that is
         //used by the WPILib classes.
         //Update the pose*/
-        frontLeft.setSpeed(frontLeftSwerveSpeed/75, frontLeft.anglePIDCalcABS(frontLeftSwerveAngle));
-        frontRight.setSpeed(frontRightSwerveSpeed/75, frontRight.anglePIDCalcABS(frontRightSwerveAngle));
-        backLeft.setSpeed(backLeftSwerveSpeed/75, backLeft.anglePIDCalcABS(backLeftSwerveAngle));
-        backRight.setSpeed(backRightSwerveSpeed/75, backRight.anglePIDCalcABS(backRightSwerveAngle));
+        if(angle){
+          frontLeft.setSpeed(0, frontLeft.anglePIDCalcABS(frontLeftSwerveAngle));
+          frontRight.setSpeed(0, frontRight.anglePIDCalcABS(frontRightSwerveAngle));
+          backLeft.setSpeed(0, backLeft.anglePIDCalcABS(backLeftSwerveAngle));
+          backRight.setSpeed(0, backRight.anglePIDCalcABS(backRightSwerveAngle));    
+        }else{
+          frontLeft.setSpeed(frontLeftSwerveSpeed/75, frontLeft.anglePIDCalcABS(frontLeftSwerveAngle));
+          frontRight.setSpeed(frontRightSwerveSpeed/75, frontRight.anglePIDCalcABS(frontRightSwerveAngle));
+          backLeft.setSpeed(backLeftSwerveSpeed/75, backLeft.anglePIDCalcABS(backLeftSwerveAngle));
+          backRight.setSpeed(backRightSwerveSpeed/75, backRight.anglePIDCalcABS(backRightSwerveAngle));
+        }
+
+        
         SmartDashboard.putNumber("fr", frontRight.getEncoder());
         SmartDashboard.putNumber("fl", frontLeft.getEncoder());
         SmartDashboard.putNumber("br", backRight.getEncoder());

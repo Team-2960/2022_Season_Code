@@ -193,8 +193,7 @@ public class OI extends SubsystemBase {
             megashooter2pointo.intakeUp();
         }else if(operatorControl.getPOV(0) == 180){
             megashooter2pointo.intakeDown();
-        }
-        
+        }        
         //CLIMB
         if(climbToLvl1()){
             megashooter2pointo.enableTravClimblvl1();
@@ -206,6 +205,8 @@ public class OI extends SubsystemBase {
             megashooter2pointo.enableTravClimblvl3();
         }else if(resetClimb()){
             megashooter2pointo.enableReset();
+        }else if(takeOffClimb()){
+            megashooter2pointo.enableTakeOff();
         }
         //TEST OI
 
@@ -250,9 +251,13 @@ public class OI extends SubsystemBase {
         return operatorControl.getRawButton(6);
     }
     public boolean reverseIntake(){
+
         return operatorControl.getRawButton(5);
     }
     public boolean shootLow(){
         return operatorControl.getRawButton(7);
+    }
+    public boolean takeOffClimb(){
+        return operatorControl.getPOV() == 270;
     }
 }
