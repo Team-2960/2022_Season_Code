@@ -85,7 +85,7 @@ public class Climb extends SubsystemBase {
       }
 
       public double getWinchPos(){
-        return mLeftClimb.getSelectedSensorPosition();
+        return Math.abs(mLeftClimb.getSelectedSensorPosition());
       }
 
       public boolean isAttached(){
