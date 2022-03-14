@@ -195,7 +195,10 @@ public class OI extends SubsystemBase {
             megashooter2pointo.intakeDown();
         }        
         //CLIMB
-        if(climbToLvl1()){
+        if(armsUp()){
+            megashooter2pointo.enableArmsUp();
+        }
+        else if(climbToLvl1()){
             megashooter2pointo.enableTravClimblvl1();
         }
         else if(climbToLvl2()){
@@ -231,7 +234,9 @@ public class OI extends SubsystemBase {
     public boolean shoot(){
         return operatorControl.getRawAxis(3) > 0.3;
     }
-
+    public boolean armsUp(){
+        return operatorControl.getRawButton(3);
+    }
     public boolean climbToLvl1(){
         return operatorControl.getRawButton(1);
     }
@@ -245,7 +250,7 @@ public class OI extends SubsystemBase {
     }
 
     public boolean resetClimb(){
-        return driverControl.getRawButton(8);
+        return operatorControl.getRawButton(8);
     }
     public boolean rampUp(){
         return operatorControl.getRawButton(6);
@@ -260,4 +265,5 @@ public class OI extends SubsystemBase {
     public boolean takeOffClimb(){
         return operatorControl.getPOV() == 270;
     }
+    
 }

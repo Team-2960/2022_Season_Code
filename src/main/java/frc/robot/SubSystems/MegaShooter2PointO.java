@@ -34,6 +34,7 @@ public class MegaShooter2PointO extends SubsystemBase {
     boolean enableTravlvl3 = false;
     boolean go = false;
     boolean enableReset = false;
+    boolean enableArmsUp = false;
 
     //Intake VARS
     boolean isIntakeOut = false;
@@ -128,6 +129,9 @@ public class MegaShooter2PointO extends SubsystemBase {
       public void enableTakeOff(){
         takeOff = true;
       }
+      public void enableArmsUp(){
+        enableArmsUp = true;
+      }
       public void armsTakeOff(){
         if(takeOff){
         if(climb.getWinchPos() < Constants.winchContractPos){
@@ -138,15 +142,17 @@ public class MegaShooter2PointO extends SubsystemBase {
         }
       }
       }
-      public void prepCLimblvl1(){
-      drive.modToAngle(0);
+      public void armsUp(){
+      if(enableArmsUp){
       climb.setPositionHook(0);
         if(climb.getWinchPos() > Constants.winchExtendPos){
           climb.setWinchSpeed(0, 0);
-          climbSequencelvl1 =2;
+          climb.setPositionArm(1);
+          enableArmsUp = false;
         }else{
           climb.setWinchSpeed(0.9, 0.9);
         }
+      }
       }
 
       public void prepCLimblvl2(){
@@ -157,20 +163,11 @@ public class MegaShooter2PointO extends SubsystemBase {
             climb.setWinchSpeed(0.9, 0.9);
           }
         }
-
-        public void prepCLimblvl3(){
-            if(climb.getWinchPos() > Constants.winchExtendPos){
-              climb.setWinchSpeed(0, 0);
-              climbSequencelvl3 =2;
-            }else{
-              climb.setWinchSpeed(0.9, 0.9);
-            }
-          }
       
       public void extendArmslvl1(){
         climb.setPositionArm(1);
         if(climb.isArmsExtended()){
-          climbSequencelvl1 = 3;
+          climbSequencelvl1 = 2;
           System.out.println("to three");
           climbTimer.start();
         }
@@ -188,7 +185,7 @@ public class MegaShooter2PointO extends SubsystemBase {
       public void extendArmslvl3(){
         climb.setPositionArm(1);
         if(climb.isArmsExtended()){
-          climbSequencelvl3 = 3;
+          climbSequencelvl3 = 2;
           System.out.println("to three");
           climbTimer.start();
         }
@@ -215,7 +212,7 @@ public class MegaShooter2PointO extends SubsystemBase {
           if(climb.getLimitSwitch()){
             climb.setWinchSpeed(0, 0);
             climb.setPositionHook(1);
-            climbSequencelvl1 = 4;
+            climbSequencelvl1 = 3;
           }else{
             climb.setWinchSpeed(-0.3, -0.3);
           }
@@ -266,7 +263,7 @@ public class MegaShooter2PointO extends SubsystemBase {
       isClimbExtendedlvl3 = true;
       climb.setWinchSpeed(-0.3, -0.3);
       climb.setWinchSpeed(0, 0);
-      climbSequencelvl3 = 4;
+      climbSequencelvl3 = 3;
     }
   }
 }
@@ -286,15 +283,14 @@ public class MegaShooter2PointO extends SubsystemBase {
       public void traversalClimblvl1(){
         if(enableTravlvl1){
           if(climbSequencelvl1 == 1){
-            prepCLimblvl1();
-          }else if(climbSequencelvl1 == 2){
             extendArmslvl1();
-          }else if(climbSequencelvl1 == 3){
+          }else if(climbSequencelvl1 == 2){
             armsInlvl1();
-          }else if(climbSequencelvl1 == 4){
+          }else if(climbSequencelvl1 == 3){
             enableTravlvl1 = false;
             climbSequencelvl1 = 1;
             go = false;
+            isClimbExtendedlvl1 = false;
           }
         }
         
@@ -311,6 +307,8 @@ public class MegaShooter2PointO extends SubsystemBase {
             enableTravlvl2 = false;
             climbSequencelvl2 = 1;
             go = false;
+            isClimbExtendedlvl2 = false;
+
           }
         }
         
@@ -318,14 +316,13 @@ public class MegaShooter2PointO extends SubsystemBase {
       public void traversalClimblvl3(){
         if(enableTravlvl3){
           if(climbSequencelvl3 == 1){
-            prepCLimblvl3();
-          }else if(climbSequencelvl3 == 2){
             extendArmslvl3();
-          }else if(climbSequencelvl3 == 3){
+          }else if(climbSequencelvl3 == 2){
             armsInlvl3();
-          }else if(climbSequencelvl3 == 4){
+          }else if(climbSequencelvl3 == 3){
             enableTravlvl3 = false;
             climbSequencelvl3 = 1;
+            isClimbExtendedlvl3 = false;
             go = false;
           }
         }
@@ -368,7 +365,9 @@ public class MegaShooter2PointO extends SubsystemBase {
           indexing();
           index.inTransit();
           //Climbing
-          if(enableTravlvl1){
+          if(enableArmsUp){
+            armsUp();
+          }else if(enableTravlvl1){
             traversalClimblvl1();
           }else if(enableTravlvl2){
             traversalClimblvl2();
@@ -387,6 +386,7 @@ public class MegaShooter2PointO extends SubsystemBase {
           megashooter2pointo.hood.printRPM();
           SmartDashboard.putNumber("camera", lime.calcDistance());
           SmartDashboard.putNumber("winch", climb.getWinchPos());
-          SmartDashboard.putBoolean("angle", climb.isArmsExtended());
+          SmartDashboard.putBoolean("limit", climb.getLimitSwitch()
+          );
       }
 }
