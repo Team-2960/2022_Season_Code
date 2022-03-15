@@ -114,7 +114,7 @@ public class Constants{
     public final static double winchExtendPos = 425000;
     public final static double winchExtendLimit = 490000;
 
-    public final static double winchContractPos = 100000;
+    public final static double winchContractPos = 50000;
     public final static int rHallEffectSensor = 2;
     public final static int lHallEffectSensor = 3;
     public final static int limitSwitchPort = 4;

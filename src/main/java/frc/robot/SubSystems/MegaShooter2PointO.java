@@ -150,7 +150,7 @@ public class MegaShooter2PointO extends SubsystemBase {
           climb.setPositionArm(1);
           enableArmsUp = false;
         }else{
-          climb.setWinchSpeed(0.9, 0.9);
+          climb.setWinchSpeed(1, 1);
         }
       }
       }
@@ -160,7 +160,7 @@ public class MegaShooter2PointO extends SubsystemBase {
             climb.setWinchSpeed(0, 0);
             climbSequencelvl2 =2;
           }else{
-            climb.setWinchSpeed(0.9, 0.9);
+            climb.setWinchSpeed(1, 1);
           }
         }
       
@@ -200,7 +200,7 @@ public class MegaShooter2PointO extends SubsystemBase {
           go = true;
         }
         if(go){
-        climb.setWinchSpeed(-0.8, -0.8);
+        climb.setWinchSpeed(-1, -1);
         if(climb.getWinchPos() < Constants.winchContractPos){
           isClimbExtendedlvl1 = true;
           climb.setWinchSpeed(-0.3, -0.3);
@@ -228,12 +228,12 @@ public class MegaShooter2PointO extends SubsystemBase {
         go = true;
       }
       if(go){
-      climb.setWinchSpeed(-0.8, -0.8);
+      climb.setWinchSpeed(-1, -1);
+      climb.setPositionHook(0);
       if(climb.getWinchPos() < Constants.winchContractPos){
         isClimbExtendedlvl2 = true;
         climb.setWinchSpeed(-0.3, -0.3);
         climb.setPositionArm(0);
-        climb.setPositionHook(0);
       }
     }
   }
@@ -257,7 +257,7 @@ public class MegaShooter2PointO extends SubsystemBase {
       go = true;
     }
     if(go){
-    climb.setWinchSpeed(-0.8, -0.8);
+    climb.setWinchSpeed(-1, -1);
     intakeUp();
     if(climb.getWinchPos() < Constants.winchContractPos){
       isClimbExtendedlvl3 = true;

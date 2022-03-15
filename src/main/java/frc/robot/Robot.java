@@ -69,7 +69,7 @@ public class Robot extends TimedRobot {
 
   public void autonomousInit() {
     drive.breakMode();
-    autonCommand = new oneBallAuton();
+    autonCommand = new twoBallAuto();
     if(autonCommand != null) autonCommand.schedule();
   }
 

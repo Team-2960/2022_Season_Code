@@ -16,13 +16,20 @@ public class moveInDir extends CommandBase{
     private Drive drive;
     private double speed;
     public double x = 0;
+    public boolean reversed = false;
     public 
     moveInDir(double distance, double theta, double speed){//Distannce in feet
         this.distance = distance * (2048 * 8.16)/(4*Math.PI);
         this.theta = theta + 90;
         drive = Drive.get_Instance();
         this.speed = speed;
-        drive.frontRight.driveMotor.setSelectedSensorPosition(0);
+        if(speed > 0){
+            reversed = true;
+        }else{
+            reversed = false;
+        }
+        x = drive.frontRight.getDriveEncoder();
+        SmartDashboard.putNumber("x", x);
     }
 
     @Override
@@ -42,7 +49,12 @@ public class moveInDir extends CommandBase{
      */
     @Override
     public boolean isFinished() {
-        return Math.abs(drive.frontRight.getDriveEncoder() * Constants.sensorConv) > distance;
+        if(reversed){
+            return drive.frontRight.getDriveEncoder() < -distance + x;
+        }
+        else{
+            return drive.frontRight.getDriveEncoder() > distance + x;
+        }
     }
 
     @Override

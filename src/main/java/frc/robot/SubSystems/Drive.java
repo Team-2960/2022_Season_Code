@@ -200,7 +200,11 @@ public class Drive extends SubsystemBase {
         //System.out.println(backLeft.getEncoder() + "BL");
         //System.out.println(backRight.getEncoder() + "BR");
         */sanitizeAngle();
-        angleRatePID(targetAngleRate);/*
+        angleRatePID(targetAngleRate);
+        SmartDashboard.putNumber("pitch",  navX.getPitch());
+       
+        /*
+        
         //SmartDashboard.putNumber("input", navX.getFusedHeading());
         //SmartDashboard.putNumber("output", navX.getRate());
         //SmartDashboard.putNumber("c", targetAngleRate/navX.getRate());

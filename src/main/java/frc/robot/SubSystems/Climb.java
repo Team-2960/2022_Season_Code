@@ -100,7 +100,7 @@ public class Climb extends SubsystemBase {
         return limitSwitch.get();
       }
       public void resetWinchPos(){
-        if(limitSwitch.get()){
+        if(limitSwitch.get() && getWinchPos() < Constants.winchContractPos){
           mLeftClimb.setSelectedSensorPosition(0); 
           mRightClimb.setSelectedSensorPosition(0); 
         }
