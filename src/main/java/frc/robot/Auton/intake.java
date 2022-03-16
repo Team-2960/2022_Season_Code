@@ -46,7 +46,7 @@ public class intake extends CommandBase{
      */
     @Override
     public boolean isFinished() {
-        return timer.get() > wait + intake; //|| trapProfile.totalTime() < timer.get();
+        return timer.get() > (wait + intake); //|| trapProfile.totalTime() < timer.get();
     }
 
     @Override
@@ -66,6 +66,8 @@ public class intake extends CommandBase{
     @Override
     public void end(boolean interrupte) {
         mega.intakeOff();
+        timer.stop();
+        timer.reset();
 
     }
 }

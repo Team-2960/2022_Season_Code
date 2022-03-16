@@ -84,10 +84,13 @@ public class Constants{
     public static int encoderIdBackRight = 10;
 
     //toAnglePID
-    public static double kPTA = 0.016;
+    public static double kPTA = 0.023;
     public static double kITA = 0;
     public static double kDTA = 0;
-    public static double angleTolerance = 15;
+    public static double smallP = 0.1;
+    public static double smallI = 0;
+    public static double smallD = 0;
+    public static double angleTolerance = 4;
 
 
 

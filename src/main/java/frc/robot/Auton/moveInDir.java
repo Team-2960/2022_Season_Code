@@ -68,6 +68,8 @@ public class moveInDir extends CommandBase{
         drive.backLeftSwerveSpeed = speed * -75;
         drive.backRightSwerveSpeed = speed * -75;
         SmartDashboard.putNumber("fr ticks", drive.frontRight.getDriveEncoder());
+        SmartDashboard.putNumber("distance auto", distance);
+
     }
 
     

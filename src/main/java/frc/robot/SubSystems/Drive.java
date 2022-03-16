@@ -48,6 +48,7 @@ public class Drive extends SubsystemBase {
     public static PIDController PIDABR;
     public static PIDController angleRatePID;
     public static PIDController toAnglePID;
+    public static PIDController smallAngle;
     public AHRS navX;
     public Swerve frontLeft;
     public Swerve frontRight;
@@ -77,6 +78,7 @@ public class Drive extends SubsystemBase {
          angleRatePID = new PIDController(Constants.aRP, Constants.aRI, Constants.aRD);
 
          toAnglePID = new PIDController(Constants.kPTA, Constants.kITA, Constants.kDTA);
+         smallAngle = new PIDController(Constants.smallP, Constants.smallI, Constants.smallD);
          PIDDFL = new PIDController(Constants.dPFL, Constants.dIFL, Constants.dDFL);
          PIDAFL = new PIDController(Constants.aPFL, Constants.aIFL, Constants.aDFL);
          PIDDFR = new PIDController(Constants.dPFR, Constants.dIFR, Constants.dDFR);
@@ -179,7 +181,11 @@ public class Drive extends SubsystemBase {
       
       public double anglePID(double target){
         SmartDashboard.putNumber("calculated", toAnglePID.calculate(gyroAngle, target));
-        return toAnglePID.calculate(gyroAngle, target);
+        if(Math.abs(target- gyroAngle)< 20){
+          return smallAngle.calculate(gyroAngle, target);
+        }else{
+          return toAnglePID.calculate(gyroAngle, target);
+        }
       }
       public void modToAngle(double angle){
         this.angle = true;
@@ -202,7 +208,6 @@ public class Drive extends SubsystemBase {
         */sanitizeAngle();
         angleRatePID(targetAngleRate);
         SmartDashboard.putNumber("pitch",  navX.getPitch());
-       
         /*
         
         //SmartDashboard.putNumber("input", navX.getFusedHeading());

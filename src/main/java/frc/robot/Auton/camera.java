@@ -2,12 +2,13 @@ package frc.robot.Auton;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.SubSystems.Drive;
+import frc.robot.SubSystems.Lime;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.*;
 
 
-public class toAngle extends CommandBase{
+public class camera extends CommandBase{
     //shoot the ball
     
     
@@ -17,9 +18,11 @@ public class toAngle extends CommandBase{
     private TrapezoidProfile trapProfile;
 
     Timer timer;
-    public toAngle(double theta){
+    Lime lime;
+    public camera(){
         
         drive = Drive.get_Instance();
+        lime = Lime.get_Instance();
         this.theta = theta + drive.navX.getFusedHeading();
         while(this.theta > 360){
           this.theta = this.theta - 360;
@@ -53,13 +56,12 @@ public class toAngle extends CommandBase{
      */
     @Override
     public boolean isFinished() {
-        return Math.abs(theta - drive.gyroAngle) < Constants.angleTolerance; //|| trapProfile.totalTime() < timer.get();
+        return lime.getHorOffset() < Constants.angleTolerance && timer.get() > 6; //|| trapProfile.totalTime() < timer.get();
     }
 
     @Override
     public void execute() {
-        var setpoint = trapProfile.calculate(timer.get());
-        drive.setVector(0, 0, drive.anglePID(theta));
+        drive.setVector(0, 0,  -0.1 * lime.getHorOffset());
         drive.periodic();
     }
 
