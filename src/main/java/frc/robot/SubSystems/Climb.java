@@ -18,8 +18,8 @@ public class Climb extends SubsystemBase {
     private DoubleSolenoid sClimbHook;
 
     //Motors
-    private TalonFX mLeftClimb;
-    private TalonFX mRightClimb;
+    public TalonFX mLeftClimb;
+    public TalonFX mRightClimb;
 
 
     //Hall Effect Sensors

@@ -5,6 +5,7 @@ import frc.robot.SubSystems.Drive;
 import frc.robot.SubSystems.Lime;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.*;
 
 
@@ -32,6 +33,7 @@ public class camera extends CommandBase{
         }
         timer = new Timer();
         timer.start();
+        System.out.println("camera start");
         trapProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(1, 1),
                                            new TrapezoidProfile.State(theta, 0),
                                            new TrapezoidProfile.State(drive.navX.getFusedHeading(), 0));

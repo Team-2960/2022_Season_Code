@@ -112,6 +112,7 @@ public class MegaShooter2PointO extends SubsystemBase {
         megashooter2pointo.setShooterRPM(hood.RPMCalc(lime.calcDistance()), hood.RPMCalc(lime.calcDistance()));
 
       }
+      
 
       public void shootOff(){
         shooting = false;
@@ -143,8 +144,8 @@ public class MegaShooter2PointO extends SubsystemBase {
       }
       }
       public void armsUp(){
+      climb.setPositionArm(0);
       if(enableArmsUp){
-      climb.setPositionHook(0);
         if(climb.getWinchPos() > Constants.winchExtendPos){
           climb.setWinchSpeed(0, 0);
           climb.setPositionArm(1);
@@ -193,8 +194,9 @@ public class MegaShooter2PointO extends SubsystemBase {
       
       public void armsInlvl1(){
         drive.modToAngle(0);
+        climb.setPositionHook(0);
         if(isClimbExtendedlvl1 == false){
-        if(climbTimer.get() > 0.5){
+        if(climbTimer.get() > 1.5){
           climbTimer.stop();
           climbTimer.reset();
           go = true;
@@ -222,7 +224,7 @@ public class MegaShooter2PointO extends SubsystemBase {
 
     public void armsInlvl2(){
       if(isClimbExtendedlvl2 == false){
-      if(climbTimer.get() > 0.5){
+      if(climbTimer.get() > 1.5){
         climbTimer.stop();
         climbTimer.reset();
         go = true;
@@ -251,7 +253,7 @@ public class MegaShooter2PointO extends SubsystemBase {
 
   public void armsInlvl3(){
     if(isClimbExtendedlvl3 == false){
-    if(climbTimer.get() > 0.5){
+    if(climbTimer.get() > 0){
       climbTimer.stop();
       climbTimer.reset();
       go = true;
@@ -259,7 +261,7 @@ public class MegaShooter2PointO extends SubsystemBase {
     if(go){
     climb.setWinchSpeed(-1, -1);
     intakeUp();
-    if(climb.getWinchPos() < Constants.winchContractPos){
+    if(climb.getWinchPos() < Constants.winchLvl3Pos){
       isClimbExtendedlvl3 = true;
       climb.setWinchSpeed(-0.3, -0.3);
       climb.setWinchSpeed(0, 0);
@@ -338,6 +340,8 @@ public class MegaShooter2PointO extends SubsystemBase {
           }
           else{
             climb.setWinchSpeed(0, 0);
+            climb.mLeftClimb.setSelectedSensorPosition(0); 
+            climb.mRightClimb.setSelectedSensorPosition(0); 
             enableReset = false;
           }
         }

@@ -172,7 +172,11 @@ public class OI extends SubsystemBase {
         else{
             megashooter2pointo.shootOff();
         }
-        
+
+        //Fli heading
+        if(flipHeading()){
+            drive.flipFusedHeading();
+        }
         //INDEX AND INTAKE
         if(reverseIntake()){
             megashooter2pointo.isIndexReversed(true);
@@ -184,14 +188,14 @@ public class OI extends SubsystemBase {
             megashooter2pointo.isIndexReversed(false);
         }
         
-        if(driverControl.getRawButton(5)){
+        if(climbUp()){
             megashooter2pointo.climb.setPositionArm(1);
-        }else if(driverControl.getRawButton(6)){
+        }else if(climbDown()){
             megashooter2pointo.climb.setPositionArm(0);
         }
-        if(operatorControl.getPOV(0)==0){
+        if(intakeUp()){
             megashooter2pointo.intakeUp();
-        }else if(operatorControl.getPOV(0) == 180){
+        }else if(intakeDown()){
             megashooter2pointo.intakeDown();
         }        
         //CLIMB
@@ -226,8 +230,16 @@ public class OI extends SubsystemBase {
         return driverControl.getRawButton(2);
     }
 
+    public boolean flipHeading(){
+        return driverControl.getRawButton(7);
+    }
+
     public boolean intake(){
         return driverControl.getRawAxis(3) >0.3 || operatorControl.getRawAxis(2) > 0.3;
+    }
+    //POV
+    public boolean takeOffClimb(){
+        return driverControl.getPOV() == 270;
     }
 
     //OPERATORS
@@ -262,8 +274,19 @@ public class OI extends SubsystemBase {
     public boolean shootLow(){
         return operatorControl.getRawButton(7);
     }
-    public boolean takeOffClimb(){
-        return operatorControl.getPOV() == 270;
+
+    //POV
+    public boolean climbUp(){
+        return operatorControl.getPOV(0) == 270;
+    }
+    public boolean climbDown(){
+        return operatorControl.getPOV(0) == 90;
+    }
+    public boolean intakeDown(){
+        return operatorControl.getPOV(0) == 180;
+    }
+    public boolean intakeUp(){
+        return operatorControl.getPOV(0) == 0;
     }
     
 }

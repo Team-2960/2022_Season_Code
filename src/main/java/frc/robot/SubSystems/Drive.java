@@ -61,6 +61,7 @@ public class Drive extends SubsystemBase {
     public double angleRateVector;
     double targetAngleRate;
     public boolean angle = false;
+    public boolean flipHeading = false;
     
     public static Drive get_Instance(){
     
@@ -106,6 +107,11 @@ public class Drive extends SubsystemBase {
       public void homeSwerve(){
         drive.setVector(180, 0, 0);
       }
+
+      public void flipFusedHeading(){
+        flipHeading = !flipHeading;
+      }
+
       public void setSwerve(double angleVectorX, double angleVectorY, double rotationVectorX){
         SmartDashboard.putNumber("angleVectorX", angleVectorX);
         SmartDashboard.putNumber("angleVectorY", angleVectorY);
@@ -160,6 +166,9 @@ public class Drive extends SubsystemBase {
       } 
       public void sanitizeAngle(){
         gyroAngle = navX.getFusedHeading();
+        if(flipHeading){
+          gyroAngle = gyroAngle + 180;
+        }
         SmartDashboard.putNumber("fused heading", gyroAngle);
         while(gyroAngle > 360){
           gyroAngle = gyroAngle - 360;

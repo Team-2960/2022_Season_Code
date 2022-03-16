@@ -90,7 +90,7 @@ public class Constants{
     public static double smallP = 0.1;
     public static double smallI = 0;
     public static double smallD = 0;
-    public static double angleTolerance = 4;
+    public static double angleTolerance = 2;
 
 
 
@@ -118,6 +118,8 @@ public class Constants{
     public final static double winchExtendLimit = 490000;
 
     public final static double winchContractPos = 50000;
+    public final static double winchLvl3Pos = 150000;
+    
     public final static int rHallEffectSensor = 2;
     public final static int lHallEffectSensor = 3;
     public final static int limitSwitchPort = 4;
