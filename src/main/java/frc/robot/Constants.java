@@ -20,7 +20,7 @@ public class Constants{
     public static double lWP = 0.550587/16;//0.51587
     public static double lWI = 4.7532*Math.pow(10, -5);
     public static double lWD = 2 * Math.pow(10, -6);
-    public static double lowGoalRPM = 6500;
+    public static double lowGoalRPM = 7500;
     public static double edgeTarmacRPM = 11000;
 
     public static double uWPP = 0.0001;//0.68585
@@ -119,7 +119,7 @@ public class Constants{
 
     public final static double winchContractPos = 50000;
     public final static double winchLvl3Pos = 150000;
-    
+
     public final static int rHallEffectSensor = 2;
     public final static int lHallEffectSensor = 3;
     public final static int limitSwitchPort = 4;

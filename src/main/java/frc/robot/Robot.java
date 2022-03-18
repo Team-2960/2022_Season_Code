@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.util.sendable.Sendable;
 import frc.robot.Auton.*;
 import frc.robot.Constants;
@@ -52,6 +53,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    PortForwarder.add(5801, "limelight.local", 5801);
     oi = new OI();
     pdp = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
     pdp.setSwitchableChannel(true);
@@ -69,7 +71,7 @@ public class Robot extends TimedRobot {
 
   public void autonomousInit() {
     drive.breakMode();
-    autonCommand = new twoBallAuto();
+    autonCommand = new oneBallAuton();
     if(autonCommand != null) autonCommand.schedule();
   }
 

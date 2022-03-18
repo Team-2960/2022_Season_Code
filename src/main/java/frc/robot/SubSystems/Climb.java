@@ -76,7 +76,7 @@ public class Climb extends SubsystemBase {
       }
 
       public void setWinchSpeed(double left, double right){
-        if((limitSwitch.get() && (left > 0 || right > 0))){
+        if((limitSwitch.get() && (left < 0 || right < 0))){
           mLeftClimb.set(ControlMode.PercentOutput, 0);
           mRightClimb.set(ControlMode.PercentOutput, 0);
         }

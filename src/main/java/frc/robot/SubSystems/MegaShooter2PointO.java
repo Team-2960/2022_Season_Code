@@ -145,6 +145,7 @@ public class MegaShooter2PointO extends SubsystemBase {
       }
       public void armsUp(){
       climb.setPositionArm(0);
+      intake.setPosition(0);
       if(enableArmsUp){
         if(climb.getWinchPos() > Constants.winchExtendPos){
           climb.setWinchSpeed(0, 0);
@@ -196,7 +197,7 @@ public class MegaShooter2PointO extends SubsystemBase {
         drive.modToAngle(0);
         climb.setPositionHook(0);
         if(isClimbExtendedlvl1 == false){
-        if(climbTimer.get() > 1.5){
+        if(climbTimer.get() > 0.5){
           climbTimer.stop();
           climbTimer.reset();
           go = true;

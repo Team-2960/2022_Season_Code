@@ -165,7 +165,7 @@ public class Drive extends SubsystemBase {
         setSwerve(angleVX, angleVY, angleRateVector);
       } 
       public void sanitizeAngle(){
-        gyroAngle = navX.getFusedHeading();
+        gyroAngle = navX.getYaw();
         if(flipHeading){
           gyroAngle = gyroAngle + 180;
         }
@@ -176,6 +176,7 @@ public class Drive extends SubsystemBase {
         while(gyroAngle < 0){
           gyroAngle = gyroAngle + 360;
         }
+        
       }
       
 
