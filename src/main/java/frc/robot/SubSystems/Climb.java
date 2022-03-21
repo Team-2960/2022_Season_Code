@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Climb extends SubsystemBase {
     private static Climb climb;
@@ -67,6 +68,7 @@ public class Climb extends SubsystemBase {
       }
 
       public void setPositionHook(int state){//0 = down 1 = up
+        SmartDashboard.putNumber("state", state);
         if(state == 0){
           sClimbHook.set(Value.kForward);
         }

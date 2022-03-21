@@ -31,7 +31,6 @@ public class turnWithTime extends CommandBase{
           this.theta = this.theta + 360;
         }
         timer = new Timer();
-        timer.start();
         trapProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(1, 1),
                                            new TrapezoidProfile.State(theta, 0),
                                            new TrapezoidProfile.State(drive.navX.getFusedHeading(), 0));
@@ -41,6 +40,8 @@ public class turnWithTime extends CommandBase{
 
     @Override
     public void initialize() {
+        timer.start();
+
     }
 
     /**
@@ -66,7 +67,7 @@ public class turnWithTime extends CommandBase{
         if(isLeft){
             drive.setVector(0, 0, -1);
         }else{
-            drive.setVector(0, 0, 2);
+            drive.setVector(0, 0, 1);
         }
         drive.periodic();
     }

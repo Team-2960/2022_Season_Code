@@ -21,7 +21,7 @@ public class Constants{
     public static double lWI = 4.7532*Math.pow(10, -5);
     public static double lWD = 2 * Math.pow(10, -6);
     public static double lowGoalRPM = 7500;
-    public static double edgeTarmacRPM = 11000;
+    public static double edgeTarmacRPM = 11500;
 
     public static double uWPP = 0.0001;//0.68585
     public static double uWII = 0;
@@ -84,13 +84,13 @@ public class Constants{
     public static int encoderIdBackRight = 10;
 
     //toAnglePID
-    public static double kPTA = 0.023;
+    public static double kPTA = 0.013;
     public static double kITA = 0;
     public static double kDTA = 0;
     public static double smallP = 0.1;
     public static double smallI = 0;
     public static double smallD = 0;
-    public static double angleTolerance = 2;
+    public static double angleTolerance = 1;
 
 
 

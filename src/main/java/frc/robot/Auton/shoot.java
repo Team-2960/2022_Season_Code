@@ -11,18 +11,20 @@ import frc.robot.*;
 public class shoot extends CommandBase{
 
     public  MegaShooter2PointO megashooter2pointo;
-    private boolean isFinish = false;
     private int numBalls = 0;
     private int totalBalls;
+    private Timer timer;
     public shoot(int balls, double speed){
         megashooter2pointo = MegaShooter2PointO.get_Instance();
         megashooter2pointo.setShooterRPM(speed, speed);
         totalBalls = balls;
+        timer = new Timer();
     }
 
     @Override
     public void initialize() {
         super.initialize();
+        timer.start();
     }
 
     /**
@@ -44,10 +46,12 @@ public class shoot extends CommandBase{
     @Override
     public void execute() {
         megashooter2pointo.shootOn();
+
         if(megashooter2pointo.fallingEdgeUpper()){
             numBalls++;
         }
         SmartDashboard.putNumber("numballs", numBalls);
+       
     }
 
     

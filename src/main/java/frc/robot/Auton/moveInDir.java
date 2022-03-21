@@ -6,10 +6,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.*;
 
+public class moveInDir extends CommandBase {
 
-public class moveInDir extends CommandBase{
-
-    
     private boolean isFinish = false;
     private double distance;
     private double theta;
@@ -17,23 +15,23 @@ public class moveInDir extends CommandBase{
     private double speed;
     public double x = 0;
     public boolean reversed = false;
-    public 
-    moveInDir(double distance, double theta, double speed){//Distannce in feet
-        this.distance = distance * (2048 * 8.16)/(4*Math.PI);
+
+    public moveInDir(double distance, double theta, double speed) {// Distannce in feet
+        this.distance = distance * (2048 * 8.16) / (4 * Math.PI);
         this.theta = theta + 90;
         drive = Drive.get_Instance();
         this.speed = speed;
-        if(speed > 0){
+        if (speed > 0) {
             reversed = true;
-        }else{
+        } else {
             reversed = false;
         }
-        x = drive.frontRight.getDriveEncoder();
-        SmartDashboard.putNumber("x", x);
     }
 
     @Override
     public void initialize() {
+        SmartDashboard.putNumber("x", x);
+        x = drive.frontRight.getDriveEncoder();
     }
 
     /**
@@ -49,10 +47,9 @@ public class moveInDir extends CommandBase{
      */
     @Override
     public boolean isFinished() {
-        if(reversed){
+        if (reversed) {
             return drive.frontRight.getDriveEncoder() < -distance + x;
-        }
-        else{
+        } else {
             return drive.frontRight.getDriveEncoder() > distance + x;
         }
     }
@@ -72,8 +69,7 @@ public class moveInDir extends CommandBase{
 
     }
 
-    
-    /** 
+    /**
      * @param interrupte
      */
     @Override

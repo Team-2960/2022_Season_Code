@@ -7,11 +7,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.*;
 
+public class intake extends CommandBase {
+    // shoot the ball
 
-public class intake extends CommandBase{
-    //shoot the ball
-    
-    
     private boolean isFinish = false;
     private double theta;
     private Drive drive;
@@ -21,16 +19,17 @@ public class intake extends CommandBase{
     private double intake;
 
     Timer timer;
-    public intake(double wait, double intake){
+
+    public intake(double wait, double intake) {
         mega = MegaShooter2PointO.get_Instance();
         timer = new Timer();
-        timer.start();
         this.wait = wait;
         this.intake = intake;
     }
 
     @Override
     public void initialize() {
+        timer.start();
     }
 
     /**
@@ -46,21 +45,20 @@ public class intake extends CommandBase{
      */
     @Override
     public boolean isFinished() {
-        return timer.get() > (wait + intake); //|| trapProfile.totalTime() < timer.get();
+        return timer.get() > (wait + intake);
     }
 
     @Override
     public void execute() {
-        if(timer.get() < wait){
-
-        }else if(timer.get() > wait && timer.get() < intake + wait){
+        if (timer.get() < wait) {
+            // Doing Nothing Intentionally
+        } else if (timer.get() > wait && timer.get() < intake + wait) {
             mega.indexing();
             mega.intakeOn();
         }
     }
 
-    
-    /** 
+    /**
      * @param interrupte
      */
     @Override

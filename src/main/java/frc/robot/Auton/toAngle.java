@@ -20,7 +20,7 @@ public class toAngle extends CommandBase{
     public toAngle(double theta){
         
         drive = Drive.get_Instance();
-        this.theta = theta + drive.navX.getFusedHeading();
+        this.theta = theta;
         while(this.theta > 360){
           this.theta = this.theta - 360;
         }
@@ -38,6 +38,8 @@ public class toAngle extends CommandBase{
 
     @Override
     public void initialize() {
+        drive.periodic();
+        theta += drive.gyroAngle;
     }
 
     /**
@@ -58,8 +60,12 @@ public class toAngle extends CommandBase{
 
     @Override
     public void execute() {
-        var setpoint = trapProfile.calculate(timer.get());
-        drive.setVector(0, 0, drive.anglePID(theta));
+        if(Math.abs(theta - drive.gyroAngle) > 15){
+            drive.setVector(0, 0, drive.anglePID(theta));
+        }else{
+            drive.setVector(0, 0, -1);
+
+        }
         drive.periodic();
     }
 

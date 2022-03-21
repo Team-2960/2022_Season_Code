@@ -8,41 +8,32 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.*;
 
+public class camera extends CommandBase {
+    // Auton Camera Alignment
 
-public class camera extends CommandBase{
-    //shoot the ball
-    
-    
-    private boolean isFinish = false;
     private double theta;
     private Drive drive;
-    private TrapezoidProfile trapProfile;
 
     Timer timer;
     Lime lime;
-    public camera(){
-        
+
+    public camera() {
+
         drive = Drive.get_Instance();
         lime = Lime.get_Instance();
-        this.theta = theta + drive.navX.getFusedHeading();
-        while(this.theta > 360){
-          this.theta = this.theta - 360;
+        this.theta = theta + drive.navX.getYaw();
+        while (this.theta > 360) {
+            this.theta = this.theta - 360;
         }
-        while(this.theta < 0){
-          this.theta = this.theta + 360;
+        while (this.theta < 0) {
+            this.theta = this.theta + 360;
         }
         timer = new Timer();
-        timer.start();
-        System.out.println("camera start");
-        trapProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(1, 1),
-                                           new TrapezoidProfile.State(theta, 0),
-                                           new TrapezoidProfile.State(drive.navX.getFusedHeading(), 0));
-
-
     }
 
     @Override
     public void initialize() {
+        timer.start();
     }
 
     /**
@@ -58,26 +49,25 @@ public class camera extends CommandBase{
      */
     @Override
     public boolean isFinished() {
-        return lime.getHorOffset() < Constants.angleTolerance && timer.get() > 6; //|| trapProfile.totalTime() < timer.get();
+        return lime.getHorOffset() < Constants.angleTolerance || timer.get() > 3;
     }
 
     @Override
     public void execute() {
-        drive.setVector(0, 0,  -0.1 * lime.getHorOffset());
+        drive.setVector(0, 0, -0.1 * lime.getHorOffset());
         drive.periodic();
     }
 
-    
-    /** 
+    /**
      * @param interrupte
      */
     @Override
     public void end(boolean interrupte) {
         drive.setVector(0, 0, 0);
-        drive.frontLeftSwerveSpeed = 0;
-        drive.frontRightSwerveSpeed = 0;
-        drive.backLeftSwerveSpeed = 0;
-        drive.backRightSwerveSpeed = 0;
+        Drive.frontLeftSwerveSpeed = 0;
+        Drive.frontRightSwerveSpeed = 0;
+        Drive.backLeftSwerveSpeed = 0;
+        Drive.backRightSwerveSpeed = 0;
         drive.periodic();
 
     }

@@ -5,17 +5,16 @@ import frc.robot.SubSystems.Drive;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.*;
 
+public class modAngle extends CommandBase {
+    // shoot the ball
 
-public class modAngle extends CommandBase{
-    //shoot the ball
-    
-    
     private boolean isFinish = false;
     private double theta;
     private Drive drive;
     Timer timer;
-    public modAngle(double theta1){
-        theta = theta1+90;
+
+    public modAngle(double theta) {
+        this.theta = theta + 90;
         drive = Drive.get_Instance();
         timer = new Timer();
     }
@@ -53,13 +52,12 @@ public class modAngle extends CommandBase{
         drive.backRightSwerveSpeed = 0;
     }
 
-    
-    /** 
+    /**
      * @param interrupte
      */
     @Override
     public void end(boolean interrupte) {
         System.out.println("fin");
     }
-    
+
 }
