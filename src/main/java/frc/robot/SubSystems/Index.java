@@ -2,6 +2,7 @@ package frc.robot.SubSystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -36,6 +37,9 @@ public class Index extends SubsystemBase {
         lowerPhotoeye = new DigitalInput(Constants.photoeye1);
         upperPhotoeye = new DigitalInput(Constants.photoeye2);
         iMotor = new TalonFX(Constants.indexMotor);
+        iMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+        iMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
+        
         iMotor.setNeutralMode(NeutralMode.Brake);
       }
       public boolean getUpperPhotoeye(){

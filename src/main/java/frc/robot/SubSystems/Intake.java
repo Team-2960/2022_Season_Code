@@ -2,6 +2,7 @@ package frc.robot.SubSystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,8 +24,12 @@ public class Intake extends SubsystemBase {
       }
       Intake(){
         iMotor = new TalonFX(Constants.intakeMotor);
+
+        iMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+        iMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
+        
         iMotor.setNeutralMode(NeutralMode.Brake);
-        sIntake = new DoubleSolenoid(20, PneumaticsModuleType.CTREPCM, 
+        sIntake = new DoubleSolenoid(20, PneumaticsModuleType.REVPH, 
                                      Constants.intakeSolenoid1, 
                                      Constants.intakeSolendoid2);
       }

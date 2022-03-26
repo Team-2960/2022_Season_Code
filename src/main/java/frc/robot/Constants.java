@@ -23,10 +23,10 @@ public class Constants{
     public static double lowGoalRPM = 7500;
     public static double edgeTarmacRPM = 11500;
 
-    public static double uWPP = 0.0001;//0.68585
+    public static double uWPP = 0.000175;//0.68585
     public static double uWII = 0;
     public static double uWDD = 0;
-    public static double lWPP = 0.0001;//0.51587
+    public static double lWPP = 0.000175;//0.51587
     public static double lWII = 0;
     public static double lWDD = 0;
 
@@ -38,30 +38,68 @@ public class Constants{
 
 
     //Drive Constants
+    public static double modLoc = 11.5  * 0.0254;
+    public static double autoSwerveTol = 1;
+
+    public static double thresholdX1 = 0.1;
+    public static double xVel1 = 0;
+
+    public static double thresholdX2 = 0.1;
+    public static double xVel2 = 0.2;
+
+    public static double thresholdX3 = 0.1;
+    public static double xVel3 = 0.2;
+
+    public static double xVelOutside = 1.7;
+
+
+    public static double thresholdY1 = 0.1;
+    public static double yVel1 = 0;
+
+    public static double thresholdY2 = 0.1;
+    public static double yVel2 = 0.2;
+
+    public static double thresholdY3 = 0.1;
+    public static double yVel3 = 0.2;
+
+    public static double yVelOutside = 1.7;
+
+
+    public static double thresholdT1 = 0.1;
+    public static double tVel1 = 0;
+
+    public static double thresholdT2 = 0.1;
+    public static double tVel2 = 0.5;
+
+    public static double thresholdT3 = 0.1;
+    public static double tVel3 = 0.5;
+
+    public static double tVelOutside = 1;
+
     public static double aRP = .3;
     public static double aRI = 0;
     public static double aRD = 0;
-    public static double dPFL = 1;
-    public static double dIFL = 1;
-    public static double dDFL = 1;
+    public static double dPFL = 0.0008;
+    public static double dIFL = 0;
+    public static double dDFL = 0;
     public static double aPFL = 0.007;
     public static double aIFL = 0;
     public static double aDFL = 0;
-    public static double dPFR = 1;
-    public static double dIFR = 1;
-    public static double dDFR = 1;
+    public static double dPFR = 0.0008;
+    public static double dIFR = 0;
+    public static double dDFR = 0;
     public static double aPFR = 0.007;
     public static double aIFR = 0;
     public static double aDFR = 0;
-    public static double dPBL = 1;
-    public static double dIBL = 1;
-    public static double dDBL = 1;
+    public static double dPBL = 0.0008;
+    public static double dIBL = 0;
+    public static double dDBL = 0;
     public static double aPBL = 0.007;
     public static double aIBL = 0;
     public static double aDBL = 0.000000;
-    public static double dPBR = 1;
-    public static double dIBR = 1;
-    public static double dDBR = 1;
+    public static double dPBR = 0.0008;
+    public static double dIBR = 0;
+    public static double dDBR = 0;
     public static double aPBR = 0.007;
     public static double aIBR = 0;
     public static double aDBR = 0;
@@ -124,6 +162,9 @@ public class Constants{
     public final static int lHallEffectSensor = 3;
     public final static int limitSwitchPort = 4;
 
+    public final static double climbPitchLow = 0;
+    public final static double climbPitchHigh = 0;
+
     //Intake Constants
     public final static int intakeMotor = 18;
     public final static int intakeSolenoid1 = 0;
@@ -142,4 +183,11 @@ public class Constants{
     //AUTON CONSTANTS
     public final static double autoSpeed = 0.3;
     public final static double sensorConv = 1;
+
+    public final static double xToPosTolerance = 0.1;
+    public final static double yToPosTolerance = 0.1;
+    public final static double thetaToPosTolerance = 0.1;
+
+    public final static double velocityToMeters = (10/8.16*Math.PI*3.9*0.0254)/(2048);
+
 }

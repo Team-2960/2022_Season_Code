@@ -13,6 +13,11 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.util.sendable.Sendable;
 import frc.robot.Auton.*;
@@ -55,9 +60,21 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     PortForwarder.add(5801, "limelight.local", 5801);
     oi = new OI();
+    UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
+    MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
+    mjpegServer1.setSource(usbCamera);
+
+    // Creates the CvSink and connects it to the UsbCamera
+    CvSink cvSink = new CvSink("opencv_USB Camera 0");
+    cvSink.setSource(usbCamera);
+
+    // Creates the CvSource and MjpegServer [2] and connects them
+    CvSource outputStream = new CvSource("Blur", PixelFormat.kMJPEG, 640, 480, 30);
+    MjpegServer mjpegServer2 = new MjpegServer("serve_Blur", 1182);
+    mjpegServer2.setSource(outputStream);
     pdp = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
     pdp.setSwitchableChannel(true);
-    comp = new Compressor(20, PneumaticsModuleType.CTREPCM);
+    comp = new Compressor(20, PneumaticsModuleType.REVPH);
     leds = new LEDs();
     drive = Drive.get_Instance();
     mega = MegaShooter2PointO.get_Instance();
@@ -70,6 +87,8 @@ public class Robot extends TimedRobot {
   }
 
   public void autonomousInit() {
+    /*drive.autonInit();
+    drive.manualSpeeds(-2.0, 0, 0);*/
     drive.breakMode();
     autonCommand = new twoBallAuto();
     if(autonCommand != null) autonCommand.schedule();
@@ -77,7 +96,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    
+    drive.periodicTele();
+    //drive.autonUpdate();
   }
 
   @Override

@@ -25,6 +25,7 @@ public class shoot extends CommandBase{
     public void initialize() {
         super.initialize();
         timer.start();
+        System.out.println("shoot start");
     }
 
     /**

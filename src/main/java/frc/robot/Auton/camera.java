@@ -49,7 +49,7 @@ public class camera extends CommandBase {
      */
     @Override
     public boolean isFinished() {
-        return lime.getHorOffset() < Constants.angleTolerance || timer.get() > 3;
+        return lime.getHorOffset() < Constants.angleTolerance && timer.get() > 3;
     }
 
     @Override
@@ -69,6 +69,7 @@ public class camera extends CommandBase {
         Drive.backLeftSwerveSpeed = 0;
         Drive.backRightSwerveSpeed = 0;
         drive.periodic();
+        System.out.println("cam fin");
 
     }
 }

@@ -35,6 +35,10 @@ public class MegaShooter2PointO extends SubsystemBase {
   boolean go = false;
   boolean enableReset = false;
   boolean enableArmsUp = false;
+  boolean enableAutoClimb = false;
+  boolean bar1 = false;
+  boolean bar2 = false;
+  boolean bar3 = false;
 
   // Intake VARS
   boolean isIntakeOut = false;
@@ -72,6 +76,14 @@ public class MegaShooter2PointO extends SubsystemBase {
   }
 
   public void indexing() {
+    SmartDashboard.putBoolean("inTransit", index.isInTransit());
+    SmartDashboard.putBoolean("upperPhotoeye", index.getUpperPhotoeye());
+    SmartDashboard.putBoolean("lowerphotoeye", index.getLowerPhotoeye());
+    SmartDashboard.putBoolean("shooting", shooting);
+    SmartDashboard.putBoolean("overrideIndex", overrideIndex);
+    SmartDashboard.putNumber("Shoot timer", shootTimer.get());
+
+
     if ((index.isInTransit() || (!index.getUpperPhotoeye() && index.getLowerPhotoeye()) || shooting) || overrideIndex) {
       index.setSpeed(-0.75);
     } else {
@@ -81,9 +93,9 @@ public class MegaShooter2PointO extends SubsystemBase {
         || (intakeEnabled && !(index.getLowerPhotoeye() && index.getUpperPhotoeye()))) {// !(index.getLowerPhotoeye() &&
                                                                                         // (index.isInTransit() ||
                                                                                         // index.getUpperPhotoeye()))
-      intake.setSpeed(-0.4);
+      intake.setSpeed(-0.8);
     } else if (isIndexReversedVar) {
-      intake.setSpeed(0.4);
+      intake.setSpeed(0.8);
     } else {
       intake.setSpeed(0);
     }
@@ -406,6 +418,38 @@ public class MegaShooter2PointO extends SubsystemBase {
     return index.fallingEdgeUpper();
   }
 
+  public void autoClimb(){
+    if(enableAutoClimb){
+      if(bar1){
+        traversalClimblvl1();
+        if(!enableTravlvl1){
+            bar2 = true;
+            bar1 = false;
+            enableTravlvl2 = true;
+        }
+      } else if (bar2) {
+        if(enableTravlvl2){
+          enableArmsUp = true;
+          traversalClimblvl2();
+        }
+        if(!enableTravlvl2){
+          enableArmsUp();
+          if(drive.navX.getPitch() > Constants.climbPitchLow && drive.navX.getPitch() < Constants.climbPitchHigh && !enableArmsUp){
+            bar3 = true;
+            bar2 = false;
+            enableTravlvl3 = true;
+          }
+        }
+      } else if (bar3) {
+        traversalClimblvl3();
+        if(!enableTravlvl3){
+            bar3 = false;
+            enableAutoClimb = false;
+        }
+      }
+    }
+  }
+
   public void periodic() {
     if (index.fallingEdgeUpper()) {
       shootTimer.reset();
@@ -413,6 +457,9 @@ public class MegaShooter2PointO extends SubsystemBase {
     indexing();
     index.inTransit();
     // Climbing
+    if(enableAutoClimb){
+      autoClimb();
+    } else{
     if (enableArmsUp) {
       armsUp();
     } else if (enableTravlvl1) {
@@ -426,6 +473,7 @@ public class MegaShooter2PointO extends SubsystemBase {
     } else if (takeOff) {
       armsTakeOff();
     }
+  }
     // if(!(climbSequencelvl3 == 1 || climbSequencelvl3 == 2 || climbSequencelvl3 ==
     // 3)){
     climb.resetWinchPos();

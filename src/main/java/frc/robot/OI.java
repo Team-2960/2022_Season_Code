@@ -129,10 +129,12 @@ public class OI extends SubsystemBase {
         done = Math.abs(done - 360);
         return done;
     }
-
+    public void oiAutonStuff(){
+        drive.setManual(0, 0);
+    }
     public void oiRun() {
         // PERIODICS
-        drive.periodic();
+        drive.periodicTele();
         SmartDashboard.putNumber("distance", lime.calcDistance());
         megashooter2pointo.periodic();
         // Drive

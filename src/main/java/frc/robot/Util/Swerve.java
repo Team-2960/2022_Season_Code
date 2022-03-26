@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
@@ -31,14 +32,25 @@ public class Swerve {
   private Rotation2d rotation2d;
   private Pose2d pose2d;
     public Swerve(int motorIdDrive,int motorIdAngle,int encoderID, PIDController pidA, PIDController pidD, double offSet){
-        //TODO ADD OFFSET OF THE MOTOR SO ITS NOT ANNOYING
         angleEncoder = new CANCoder(encoderID);
         angleEncoder.configMagnetOffset(offSet);
         drivePID = pidA;
         anglePID = pidD;
         driveMotor = new TalonFX(motorIdDrive);
         angleMotor = new TalonFX(motorIdAngle);
+        driveMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 20);
+        driveMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 20);
+        angleMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
+        angleMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
+        
+    }
 
+    public void resetDriveEnc(){
+        driveMotor.setSelectedSensorPosition(0);
+    }
+
+    public double totalDis(){
+        return driveMotor.getSelectedSensorPosition();
     }
 
     public void setSpeed(double driveSpeed, double angleSpeed){
@@ -55,7 +67,7 @@ public class Swerve {
     }
     public double drivePIDCalc(double rate){
         double calcDriveSpeed = 0;
-        //angle
+        calcDriveSpeed = drivePID.calculate(getMetersPerSec(), rate);
         return calcDriveSpeed;
     }
 
@@ -112,5 +124,23 @@ public class Swerve {
     }
     public void setDriveModeCoast(){
         driveMotor.setNeutralMode(NeutralMode.Coast);
+    }
+    //new functions
+    public double getMetersPerSec() {
+        return driveMotor.getSelectedSensorVelocity() * Constants.velocityToMeters;
+    }
+    public void setMetersPerSec(double metersPerSec) {
+        //some way to go the correct
+        double FF = 0.25735*(metersPerSec)-0.01786;
+        double pidVal = drivePIDCalc(getMetersPerSec());
+        setDriveSpeed(FF + pidVal);
+    }
+    public void modState(SwerveModuleState state) {
+        state.angle.getDegrees();
+        setAngleSpeed(anglePIDCalcABS(state.angle.getDegrees()+90));
+        setMetersPerSec(state.speedMetersPerSecond);
+    }
+    public SwerveModuleState getState() {
+        return new SwerveModuleState(getMetersPerSec(), new Rotation2d(Math.toRadians(angleEncoder.getAbsolutePosition()-90)));
     }
 }
