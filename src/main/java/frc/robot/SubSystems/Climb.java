@@ -31,7 +31,8 @@ public class Climb extends SubsystemBase {
     //Limit Switch
     private DigitalInput limitSwitch;
 
-
+    //Encoder
+    public Encoder climbEncoder;
 
     public static Climb get_Instance(){
     
@@ -61,6 +62,8 @@ public class Climb extends SubsystemBase {
         rHallEffect = new DigitalInput(Constants.rHallEffectSensor);
         lHallEffect = new DigitalInput(Constants.lHallEffectSensor);
         limitSwitch = new DigitalInput(Constants.limitSwitchPort);
+
+        climbEncoder = new Encoder(Constants.climbEncoderPortA, Constants.climbEncoderPortB);
       }
 
       public void setPositionArm(int state){//0 = down 1 = up
@@ -72,6 +75,10 @@ public class Climb extends SubsystemBase {
           sClimbLArm.set(Value.kReverse);
           sClimbRArm.set(Value.kReverse);
         }
+      }
+
+      public double getClimbEncoder(){
+        return climbEncoder.get();
       }
 
       public void setPositionHook(int state){//0 = down 1 = up
@@ -94,7 +101,7 @@ public class Climb extends SubsystemBase {
       }
 
       public double getWinchPos(){
-        return Math.abs(mLeftClimb.getSelectedSensorPosition());
+        return Math.abs(climbEncoder.get());
       }
 
       public boolean isAttached(){
@@ -108,10 +115,10 @@ public class Climb extends SubsystemBase {
       public boolean getLimitSwitch(){
         return !limitSwitch.get();
       }
+
       public void resetWinchPos(){
         if(limitSwitch.get() && getWinchPos() < Constants.winchContractPos){
-          mLeftClimb.setSelectedSensorPosition(0); 
-          mRightClimb.setSelectedSensorPosition(0); 
+          climbEncoder.reset(); 
         }
       }
 }

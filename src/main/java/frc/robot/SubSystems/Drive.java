@@ -149,8 +149,8 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber("period", currTime - prevTime);
     prevTime = currTime;
     
-    SmartDashboard.putNumber("odo X", (m_odometry.getPoseMeters().getX()) -0.3489);
-    SmartDashboard.putNumber("odo Y", (m_odometry.getPoseMeters().getY()) - 0.3489);
+    SmartDashboard.putNumber("odo X", (m_odometry.getPoseMeters().getX()) + 0.24158);
+    SmartDashboard.putNumber("odo Y", (m_odometry.getPoseMeters().getY())-  0.3489);
     SmartDashboard.putNumber("odo theta", m_odometry.getPoseMeters().getRotation().getDegrees());
     if(autoTimer.get() > 0.5){
     ChassisSpeeds speeds = new ChassisSpeeds(velY, velX, omega);

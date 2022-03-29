@@ -61,7 +61,7 @@ public class toPos extends CommandBase{
     public void execute() {
         double currX = drive.m_odometry.getPoseMeters().getX();
         double currY = drive.m_odometry.getPoseMeters().getY();
-        double currTheta = drive.m_odometry.getPoseMeters().getRotation().getDegrees();
+        double currTheta = drive.navX.getYaw();
         tarX = x - currX;
         tarY = y - currY;
         tarTheta = theta - currTheta;

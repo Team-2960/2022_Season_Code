@@ -390,8 +390,7 @@ public class MegaShooter2PointO extends SubsystemBase {
         climb.setWinchSpeed(-0.3, -0.3);
       } else {
         climb.setWinchSpeed(0, 0);
-        climb.mLeftClimb.setSelectedSensorPosition(0);
-        climb.mRightClimb.setSelectedSensorPosition(0);
+        climb.climbEncoder.reset();
         enableReset = false;
       }
     }
@@ -417,7 +416,20 @@ public class MegaShooter2PointO extends SubsystemBase {
   public boolean fallingEdgeUpper() {
     return index.fallingEdgeUpper();
   }
-
+  public void initAutoClimb(){
+    enableAutoClimb = true;
+    bar1 = true;
+    enableTravlvl1 = true;
+  }
+  public void disableAutoClimb(){
+    enableAutoClimb = false;
+    bar1 = false;
+    bar2 = false;
+    bar3 = false;
+    enableTravlvl1 = false;
+    enableTravlvl2 = false;
+    enableTravlvl3 = false;
+  }
   public void autoClimb(){
     if(enableAutoClimb){
       if(bar1){
@@ -434,7 +446,7 @@ public class MegaShooter2PointO extends SubsystemBase {
         }
         if(!enableTravlvl2){
           enableArmsUp();
-          if(drive.navX.getPitch() > Constants.climbPitchLow && drive.navX.getPitch() < Constants.climbPitchHigh && !enableArmsUp){
+          if(drive.navX.getPitch() > Constants.climbPitchLow && !enableArmsUp){
             bar3 = true;
             bar2 = false;
             enableTravlvl3 = true;
@@ -482,7 +494,6 @@ public class MegaShooter2PointO extends SubsystemBase {
     SmartDashboard.putBoolean("shooting", shooting);
     megashooter2pointo.hood.printRPM();
     SmartDashboard.putNumber("camera", lime.calcDistance());
-    SmartDashboard.putNumber("winch", climb.getWinchPos());
     SmartDashboard.putBoolean("limit", climb.getLimitSwitch());
   }
 }

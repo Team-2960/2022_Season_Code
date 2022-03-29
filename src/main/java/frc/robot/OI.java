@@ -174,7 +174,7 @@ public class OI extends SubsystemBase {
 
         // Fli heading
         if (flipHeading()) {
-            drive.flipFusedHeading();
+            megashooter2pointo.climb.setWinchSpeed(0.2, 0.2);
         }
 
         if (overrideIndex()) {

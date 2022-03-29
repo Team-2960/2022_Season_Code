@@ -87,17 +87,17 @@ public class Robot extends TimedRobot {
   }
 
   public void autonomousInit() {
-    /*drive.autonInit();
-    drive.manualSpeeds(-2.0, 0, 0);*/
+    drive.autonInit();
+    //drive.manualSpeeds(1.5, 1.5, 0);
     drive.breakMode();
-    autonCommand = new twoBallAuto();
+    autonCommand = new toPosTest();
     if(autonCommand != null) autonCommand.schedule();
   }
 
   @Override
   public void autonomousPeriodic() {
-    drive.periodicTele();
-    //drive.autonUpdate();
+    //drive.periodicTele();
+    drive.autonUpdate();
   }
 
   @Override
@@ -108,6 +108,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     oi.oiRun();
+    SmartDashboard.putNumber("winch", mega.climb.getClimbEncoder());
+
   }
 
   @Override

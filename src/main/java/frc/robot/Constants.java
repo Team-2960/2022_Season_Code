@@ -44,11 +44,11 @@ public class Constants{
     public static double thresholdX1 = 0.1;
     public static double xVel1 = 0;
 
-    public static double thresholdX2 = 0.1;
+    public static double thresholdX2 = 0.3;
     public static double xVel2 = 0.2;
 
-    public static double thresholdX3 = 0.1;
-    public static double xVel3 = 0.2;
+    public static double thresholdX3 = 1;
+    public static double xVel3 = 0.7;
 
     public static double xVelOutside = 1.7;
 
@@ -56,11 +56,11 @@ public class Constants{
     public static double thresholdY1 = 0.1;
     public static double yVel1 = 0;
 
-    public static double thresholdY2 = 0.1;
+    public static double thresholdY2 = 0.3;
     public static double yVel2 = 0.2;
 
-    public static double thresholdY3 = 0.1;
-    public static double yVel3 = 0.2;
+    public static double thresholdY3 = 1;
+    public static double yVel3 = 0.7;
 
     public static double yVelOutside = 1.7;
 
@@ -72,9 +72,9 @@ public class Constants{
     public static double tVel2 = 0.5;
 
     public static double thresholdT3 = 0.1;
-    public static double tVel3 = 0.5;
+    public static double tVel3 = 1;
 
-    public static double tVelOutside = 1;
+    public static double tVelOutside = 1.5;
 
     public static double aRP = .3;
     public static double aRI = 0;
@@ -152,10 +152,10 @@ public class Constants{
     public final static int climbHookSolenoid2 = 7;
     public final static int mClimbL = 13;
     public final static int mClimbR = 14;
-    public final static double winchExtendPos = 425000;
+    public final static double winchExtendPos = 9300;
     public final static double winchExtendLimit = 490000;
 
-    public final static double winchContractPos = 50000;
+    public final static double winchContractPos = 1500;
     public final static double winchLvl3Pos = 150000;
 
     public final static int rHallEffectSensor = 2;
@@ -164,6 +164,9 @@ public class Constants{
 
     public final static double climbPitchLow = 0;
     public final static double climbPitchHigh = 0;
+
+    public final static int climbEncoderPortA = 5;
+    public final static int climbEncoderPortB = 6;
 
     //Intake Constants
     public final static int intakeMotor = 18;
