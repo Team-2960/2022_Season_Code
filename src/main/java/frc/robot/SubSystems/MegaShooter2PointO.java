@@ -491,7 +491,7 @@ public class MegaShooter2PointO extends SubsystemBase {
     climb.resetWinchPos();
     // }
     hood.calcWheelSpeed();
-    SmartDashboard.putBoolean("shooting", shooting);
+    SmartDashboard.putNumber("pitch", drive.navX.getPitch());
     megashooter2pointo.hood.printRPM();
     SmartDashboard.putNumber("camera", lime.calcDistance());
     SmartDashboard.putBoolean("limit", climb.getLimitSwitch());

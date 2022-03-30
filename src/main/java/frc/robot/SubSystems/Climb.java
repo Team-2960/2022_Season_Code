@@ -4,8 +4,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -48,6 +50,8 @@ public class Climb extends SubsystemBase {
         sClimbHook = new DoubleSolenoid(20, PneumaticsModuleType.REVPH, Constants.climbHookSolenoid1, Constants.climbHookSolenoid2);
         mLeftClimb = new TalonFX(Constants.mClimbL);
         mRightClimb = new TalonFX(Constants.mClimbR);
+        mLeftClimb.setNeutralMode(NeutralMode.Brake);
+        mRightClimb.setNeutralMode(NeutralMode.Brake);
         mLeftClimb.configForwardSoftLimitEnable(true);
         mRightClimb.configForwardSoftLimitEnable(true);
         mLeftClimb.configForwardSoftLimitThreshold(Constants.winchExtendLimit);
@@ -117,7 +121,7 @@ public class Climb extends SubsystemBase {
       }
 
       public void resetWinchPos(){
-        if(limitSwitch.get() && getWinchPos() < Constants.winchContractPos){
+        if(getLimitSwitch() && getWinchPos() < Constants.winchContractPos){
           climbEncoder.reset(); 
         }
       }
