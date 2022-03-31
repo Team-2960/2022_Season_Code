@@ -49,6 +49,8 @@ public class MegaShooter2PointO extends SubsystemBase {
 
   // Climb Timer
   Timer climbTimer;
+  Timer autoTimer;
+  double loop = 0;
 
   // Shoot TImer
   Timer shootTimer;
@@ -73,6 +75,7 @@ public class MegaShooter2PointO extends SubsystemBase {
     climbTimer = new Timer();
     shootTimer = new Timer();
     shootTimer.start();
+    autoTimer = new Timer();
   }
 
   public void indexing() {
@@ -93,7 +96,7 @@ public class MegaShooter2PointO extends SubsystemBase {
         || (intakeEnabled && !(index.getLowerPhotoeye() && index.getUpperPhotoeye()))) {// !(index.getLowerPhotoeye() &&
                                                                                         // (index.isInTransit() ||
                                                                                         // index.getUpperPhotoeye()))
-      intake.setSpeed(-0.8);
+      intake.setSpeed(-1);
     } else if (isIndexReversedVar) {
       intake.setSpeed(0.8);
     } else {
@@ -238,7 +241,8 @@ public class MegaShooter2PointO extends SubsystemBase {
     }
   }
 
-  public void armsInlvl1() {
+  public void 
+  armsInlvl1() {
     drive.modToAngle(0);
     climb.setPositionHook(0);
     if (isClimbExtendedlvl1 == false) {
@@ -398,9 +402,10 @@ public class MegaShooter2PointO extends SubsystemBase {
 
   public void disableClimb() {
     enableTravlvl1 = false;
-    enableTravlvl1 = false;
-    enableTravlvl1 = false;
+    enableTravlvl2 = false;
+    enableTravlvl3 = false;
     enableReset = false;
+    enableAutoClimb = false;
     takeOff = false;
     climb.setWinchSpeed(0, 0);
   }
@@ -431,6 +436,7 @@ public class MegaShooter2PointO extends SubsystemBase {
     enableTravlvl3 = false;
   }
   public void autoClimb(){
+    
     if(enableAutoClimb){
       if(bar1){
         traversalClimblvl1();
@@ -438,21 +444,31 @@ public class MegaShooter2PointO extends SubsystemBase {
             bar2 = true;
             bar1 = false;
             enableTravlvl2 = true;
+            autoTimer.start();
         }
-      } else if (bar2) {
+      } else if (bar2 && autoTimer.get() > 1) {
         if(enableTravlvl2){
-          enableArmsUp = true;
           traversalClimblvl2();
         }
         if(!enableTravlvl2){
-          enableArmsUp();
-          if(drive.navX.getPitch() > Constants.climbPitchLow && !enableArmsUp){
+          if(loop == 0){
+            enableArmsUp = true;
+            autoTimer.reset();
+            autoTimer.start();
+          }
+          loop++;
+          if(autoTimer.get()> 1){
+            armsUp();
+          }
+          if(drive.navX.getPitch() < Constants.climbPitchLow && !enableArmsUp){
             bar3 = true;
             bar2 = false;
             enableTravlvl3 = true;
+            autoTimer.reset();
+            autoTimer.start();
           }
         }
-      } else if (bar3) {
+      } else if (bar3 && autoTimer.get() > 1.5) {
         traversalClimblvl3();
         if(!enableTravlvl3){
             bar3 = false;
