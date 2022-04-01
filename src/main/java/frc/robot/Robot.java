@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.MjpegServer;
@@ -50,6 +51,7 @@ public class Robot extends TimedRobot {
   private LEDs leds;
   private Drive drive;
   private MegaShooter2PointO mega;
+  private UsbCamera UsbCamera;
 
 
   /**
@@ -58,6 +60,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    UsbCamera = CameraServer.getInstance().startAutomaticCapture(0);
+
     PortForwarder.add(5801, "limelight.local", 5801);
     oi = new OI();
     UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
@@ -90,14 +94,14 @@ public class Robot extends TimedRobot {
     drive.autonInit();
     //drive.manualSpeeds(1.5, 1.5, 0);
     drive.breakMode();
-    autonCommand = new toPosTest();
+    autonCommand = new twoBallAuto();
     if(autonCommand != null) autonCommand.schedule();
   }
 
   @Override
   public void autonomousPeriodic() {
-    //drive.periodicTele();
-    drive.autonUpdate();
+    drive.periodicTele();
+    //drive.autonUpdate();
   }
 
   @Override

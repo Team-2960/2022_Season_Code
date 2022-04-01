@@ -152,7 +152,7 @@ public class Constants{
     public final static int climbHookSolenoid2 = 7;
     public final static int mClimbL = 13;
     public final static int mClimbR = 14;
-    public final static double winchExtendPos = 14000;
+    public final static double winchExtendPos = 11500;
     public final static double winchExtendLimit = 490000;
     //17
     public final static double winchContractPos = 1500;
@@ -162,7 +162,7 @@ public class Constants{
     public final static int lHallEffectSensor = 3;
     public final static int limitSwitchPort = 4;
 
-    public final static double climbPitchLow = 0;
+    public final static double climbPitchLow = 5;
     public final static double climbPitchHigh = 0;
 
     public final static int climbEncoderPortA = 5;

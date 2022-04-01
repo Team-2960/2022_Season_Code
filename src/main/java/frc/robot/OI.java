@@ -146,7 +146,7 @@ public class OI extends SubsystemBase {
          */if (cameraTracking()) {
             drive.setVector(driveAngle(driverControl.getRawAxis(0), driverControl.getRawAxis(1)),
                     Math.sqrt(Math.pow(Math.abs(driverControl.getRawAxis(0)), 2)
-                            + Math.pow(Math.abs(driverControl.getRawAxis(1)), 2)),
+                            + Math.pow(Math.abs(driverControl.getRawAxis(1)), 2)) * 1.5,
                     -0.1 * lime.getHorOffset());
         } else {
             drive.setVector(driveAngle(driverControl.getRawAxis(0), driverControl.getRawAxis(1)),
@@ -222,6 +222,12 @@ public class OI extends SubsystemBase {
         } else if (takeOffClimb()) {
             megashooter2pointo.enableTakeOff();
         }
+        if(autoClimbTest()){
+            megashooter2pointo.initAutoClimb();
+        }
+        if(disableAutoClimbTest()){
+            megashooter2pointo.disableClimb();
+        }
         // TEST OI
 
         // GITHUB??????
@@ -244,6 +250,12 @@ public class OI extends SubsystemBase {
 
     public boolean intake() {
         return driverControl.getRawAxis(3) > 0.3 || operatorControl.getRawAxis(2) > 0.3;
+    }
+    public boolean autoClimbTest(){
+        return driverControl.getRawButton(4);
+    }
+    public boolean disableAutoClimbTest(){
+        return driverControl.getRawButton(3);
     }
 
     // POV
