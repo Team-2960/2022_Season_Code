@@ -125,7 +125,7 @@ public class MegaShooter2PointO extends SubsystemBase {
   }
 
   public void shootOn() {
-    if (hood.isWheelAtVel() && shootTimer.get() > 0.5) {
+    if (hood.isShootReady() && shootTimer.get() > 0.5) {
       shooting = true;
     } else {
       shooting = false;

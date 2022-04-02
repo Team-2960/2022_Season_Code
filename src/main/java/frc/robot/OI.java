@@ -167,7 +167,7 @@ public class OI extends SubsystemBase {
         } else if (extraHighLow()) {
             megashooter2pointo.shoot(10500);
         } else if (rampUp()) {
-            megashooter2pointo.setShooterRPM(11000, 11000);
+            megashooter2pointo.setShooterRPM(11500, 11500);
         } else {
             megashooter2pointo.shootOff();
         }

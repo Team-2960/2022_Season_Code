@@ -37,7 +37,9 @@ public class Hood extends SubsystemBase {
   private BangBangController bangL;
   private BangBangController bangU;
 
-  private double shooterTolerance = 150;
+  private double shooterTolerance = 200;
+
+  private int shootFrames = 0;
 
   public static Hood get_Instance() {
     if (hood == null) {
@@ -96,10 +98,19 @@ public class Hood extends SubsystemBase {
   }
 
   public boolean isWheelAtVel() {
-    boolean lower_limit = Math.abs(lowerWheelVel - Math.abs(mLowerWheel.getSelectedSensorVelocity())) < shooterTolerance;
-    boolean upper_limit = Math.abs(upperWheelVel - Math.abs(mUpperWheel.getSelectedSensorVelocity())) < shooterTolerance;
+    double low_error = Math.abs(lowerWheelVel - Math.abs(mLowerWheel.getSelectedSensorVelocity()));
+    double high_error = Math.abs(upperWheelVel - Math.abs(mUpperWheel.getSelectedSensorVelocity()));
+
+    boolean lower_limit = low_error < shooterTolerance;
+    boolean upper_limit = high_error < shooterTolerance;
+
     SmartDashboard.putBoolean("lower limit", lower_limit);
     SmartDashboard.putBoolean("upper limit", upper_limit);
+    
+    SmartDashboard.putNumber("lower error", low_error);
+    SmartDashboard.putNumber("upper error", high_error);
+    
+
     return lower_limit && upper_limit;
   }
 
@@ -111,4 +122,14 @@ public class Hood extends SubsystemBase {
   public double RPMCalc(double distance) {
     return (41.666666666) * distance + 7583.33;
   }
+
+  public boolean isShootReady(){
+    if(isWheelAtVel()){
+      shootFrames = 0;
+    }else{
+      shootFrames++;
+    }
+    return shootFrames < 3;
+  }
+
 }
