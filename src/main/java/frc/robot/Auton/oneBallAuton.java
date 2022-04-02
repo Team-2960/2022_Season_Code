@@ -13,7 +13,7 @@ public class oneBallAuton extends SequentialCommandGroup{
             new moveInDir(36,180,0.3),
            // new moveInDir(10, 0, 0.3)
             //new toAngle(180),
-            new shoot(1, 11000),
+            new shoot(1, 11500),
             new moveInDir(48,180,0.3)
 
             //new toAngle(90)

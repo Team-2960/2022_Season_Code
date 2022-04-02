@@ -22,6 +22,6 @@ public class Lime {
         return (Constants.h2-Constants.h1)/Math.tan((Constants.a1 - NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0))*Math.PI/180)-31;
     }
     public boolean isSeeTar(){
-        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getBoolean(false);
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0) == 1;
     }
 }

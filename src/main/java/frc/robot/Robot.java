@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
     drive.autonInit();
     //drive.manualSpeeds(1.5, 1.5, 0);
     drive.breakMode();
-    autonCommand = new twoBallAuto();
+    autonCommand = new twoBallAutoCamera();
     if(autonCommand != null) autonCommand.schedule();
   }
 
