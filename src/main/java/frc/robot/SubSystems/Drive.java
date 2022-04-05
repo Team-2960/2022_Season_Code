@@ -18,6 +18,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.LowerCamelCaseStrategy;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
@@ -148,16 +150,15 @@ public class Drive extends SubsystemBase {
     double currTime = autoTimer.get();
     SmartDashboard.putNumber("period", currTime - prevTime);
     prevTime = currTime;
-    
-    SmartDashboard.putNumber("odo X", (m_odometry.getPoseMeters().getX()) + 0.24158);
-    SmartDashboard.putNumber("odo Y", (m_odometry.getPoseMeters().getY())-  0.3489);
+
     SmartDashboard.putNumber("odo theta", m_odometry.getPoseMeters().getRotation().getDegrees());
+    SmartDashboard.putNumber("Gyro Angle", navX.getYaw());
     if(autoTimer.get() > 0.5){
-    ChassisSpeeds speeds = new ChassisSpeeds(velY, velX, omega);
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(velY, velX, omega, Rotation2d.fromDegrees(-navX.getYaw()));
     SwerveModuleState[] moduleStates = m_kinematics.toSwerveModuleStates(speeds);
 
     // Front left module state
-    SwerveModuleState frontLeftState = moduleStates[0];
+    SwerveModuleState backRightState = moduleStates[0];
 
     // Front right module state
     SwerveModuleState frontRightState = moduleStates[1];
@@ -166,7 +167,7 @@ public class Drive extends SubsystemBase {
     SwerveModuleState backLeftState = moduleStates[2];
 
     // Back right module state
-    SwerveModuleState backRightState = moduleStates[3];
+    SwerveModuleState frontLeftState = moduleStates[3];
 
     frontRight.modState(frontRightState);
     frontLeft.modState(frontLeftState);
@@ -196,6 +197,24 @@ public class Drive extends SubsystemBase {
 
   }
 
+  public double properSanitize(double tarTheta, double currTheta){
+    double lowError = Math.abs((tarTheta - 2 * Math.PI) - currTheta);
+    SmartDashboard.putNumber("low", lowError);
+    double highError = Math.abs((tarTheta + 2 * Math.PI) - currTheta);
+    double error = Math.abs((tarTheta) - currTheta);
+    SmartDashboard.putNumber("High", highError);
+    SmartDashboard.putNumber("er", error);
+    SmartDashboard.putNumber("angle rad", currTheta);
+    if(lowError < error && lowError < highError){
+      return currTheta - 2 * Math.PI;
+    }else if(highError < error){
+      return currTheta + 2 * Math.PI;
+    }else{
+      return currTheta;
+    }
+
+
+  }
   public void resetSwerveOdometry() {
     m_odometry.resetPosition(new Pose2d(0, 0, new Rotation2d(navX.getYaw())), new Rotation2d(navX.getYaw()));
   }

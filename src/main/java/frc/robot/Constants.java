@@ -41,26 +41,26 @@ public class Constants{
     public static double modLoc = 11.5  * 0.0254;
     public static double autoSwerveTol = 1;
 
-    public static double thresholdX1 = 0.1;
+    public static double thresholdX1 = 0.03;
     public static double xVel1 = 0;
 
     public static double thresholdX2 = 0.3;
-    public static double xVel2 = 0.2;
+    public static double xVel2 = 0.8;
 
     public static double thresholdX3 = 1;
-    public static double xVel3 = 0.7;
+    public static double xVel3 = 1.5;
 
     public static double xVelOutside = 1.7;
 
 
-    public static double thresholdY1 = 0.1;
+    public static double thresholdY1 = 0.03;
     public static double yVel1 = 0;
 
     public static double thresholdY2 = 0.3;
-    public static double yVel2 = 0.2;
+    public static double yVel2 = 0.8;
 
     public static double thresholdY3 = 1;
-    public static double yVel3 = 0.7;
+    public static double yVel3 = 1.5;
 
     public static double yVelOutside = 1.7;
 
@@ -68,13 +68,13 @@ public class Constants{
     public static double thresholdT1 = 0.1;
     public static double tVel1 = 0;
 
-    public static double thresholdT2 = 0.1;
-    public static double tVel2 = 0.5;
+    public static double thresholdT2 = 0.4;
+    public static double tVel2 = 1.5;
 
-    public static double thresholdT3 = 0.1;
-    public static double tVel3 = 1;
+    public static double thresholdT3 = 0.7;
+    public static double tVel3 = 1.5;
 
-    public static double tVelOutside = 1.5;
+    public static double tVelOutside = Math.PI;
 
     public static double aRP = .3;
     public static double aRI = 0;
@@ -187,8 +187,8 @@ public class Constants{
     public final static double autoSpeed = 0.3;
     public final static double sensorConv = 1;
 
-    public final static double xToPosTolerance = 0.1;
-    public final static double yToPosTolerance = 0.1;
+    public final static double xToPosTolerance = 0.03;
+    public final static double yToPosTolerance = 0.03;
     public final static double thetaToPosTolerance = 0.1;
 
     public final static double velocityToMeters = (10/8.16*Math.PI*3.9*0.0254)/(2048);

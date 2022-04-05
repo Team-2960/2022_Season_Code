@@ -92,16 +92,16 @@ public class Robot extends TimedRobot {
 
   public void autonomousInit() {
     drive.autonInit();
-    //drive.manualSpeeds(1.5, 1.5, 0);
+    //drive.manualSpeeds(0, 1.5, 0);
     drive.breakMode();
-    autonCommand = new twoBallAutoCamera();
+    autonCommand = new toPosTest();
     if(autonCommand != null) autonCommand.schedule();
   }
 
   @Override
   public void autonomousPeriodic() {
-    drive.periodicTele();
-    //drive.autonUpdate();
+    //drive.periodicTele();
+    drive.autonUpdate();
   }
 
   @Override

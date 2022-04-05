@@ -1,6 +1,7 @@
 package frc.robot.Auton;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.SubSystems.*;
 import frc.robot.*;
@@ -25,7 +26,7 @@ public class toPos extends CommandBase{
     double tarY = 10000000;
     double tarTheta = 1000000;
     //x and y are relative to the starting location and time is relative to the start of the command
-    //Meters and radians are the units
+    //Meters and degrees are the units
     public toPos(double x, double y, double theta){
         this.x = x;
         this.y = y;
@@ -59,12 +60,17 @@ public class toPos extends CommandBase{
 
     @Override
     public void execute() {
-        double currX = drive.m_odometry.getPoseMeters().getX();
-        double currY = drive.m_odometry.getPoseMeters().getY();
-        double currTheta = drive.navX.getYaw();
+        double currX = drive.m_odometry.getPoseMeters().getY();
+        double currY = drive.m_odometry.getPoseMeters().getX();
+        SmartDashboard.putNumber("odo X", currX);
+        SmartDashboard.putNumber("odo Y", currY);
+        double currTheta = Math.toRadians(drive.navX.getYaw());
         tarX = x - currX;
         tarY = y - currY;
+        double sanTheta = drive.properSanitize(theta, currTheta);
         tarTheta = theta - currTheta;
+        SmartDashboard.putNumber("sanitize angle", sanTheta);
+        SmartDashboard.putNumber("angle", theta);
         double finalVelX = 0;
         double finalVelY = 0;
         double finalOmega = 0;
@@ -90,14 +96,14 @@ public class toPos extends CommandBase{
 
 
         //SETS THE Y VELOCITY BASED ON HOW CLOSE WE ARE TO THE DESIRED Y COORD
-        if(tarY < Constants.thresholdY1){
-            drive.velY = Constants.yVel1;
-        }else if(tarY <Constants.thresholdY2){
-            drive.velY = Constants.yVel2;
-        }else if(tarY < Constants.thresholdY3){
-            drive.velY = Constants.yVel3;
+        if(Math.abs(tarY) < Constants.thresholdY1){
+            finalVelY = Constants.yVel1;
+        }else if(Math.abs(tarY) <Constants.thresholdY2){
+            finalVelY = Constants.yVel2;
+        }else if(Math.abs(tarY) < Constants.thresholdY3){
+            finalVelY = Constants.yVel3;
         }else{
-            drive.velY = Constants.yVelOutside;
+            finalVelY = Constants.yVelOutside;
         }
         //THE SIGNS MIGHT NEED TO BE FLIPPED
         //THIS PART OF THE CODE ADJUSTS THE DIRECTION OF THE VELOCITY SO THAT IT GOES THE CORRECT DIRECTION BASED ON WHETHER OUR ERROR IS POSITIVE OR NEGATIVE
@@ -108,11 +114,11 @@ public class toPos extends CommandBase{
         }
         //NOTE tarTheta IS IN DEGREES BUT OUTPUT WILL BE IN RAD/SEC
         //This part sets the omega based on how far we are from the desired theta
-        if(tarTheta < Constants.thresholdT1){
+        if(Math.abs(tarTheta) < Constants.thresholdT1){
             finalOmega = Constants.tVel1;
-        }else if(tarTheta <Constants.thresholdT2){
+        }else if(Math.abs(tarTheta) <Constants.thresholdT2){
             finalOmega = Constants.tVel2;
-        }else if(tarTheta < Constants.thresholdT3){
+        }else if(Math.abs(tarTheta) < Constants.thresholdT3){
             finalOmega = Constants.tVel3;
         }else{
             finalOmega = Constants.tVelOutside;
@@ -133,6 +139,9 @@ public class toPos extends CommandBase{
      */
     @Override
     public void end(boolean interrupte) {
-        //drive.setVector(0, 0, 0);
+        System.out.println("finished com");
+        drive.omega = 0;
+        drive.velX = 0;
+        drive.velY = 0;
     }
 }
