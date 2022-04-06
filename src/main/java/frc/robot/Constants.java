@@ -23,10 +23,10 @@ public class Constants{
     public static double lowGoalRPM = 7500;
     public static double edgeTarmacRPM = 11500;
 
-    public static double uWPP = 0.000182;//0.68585
+    public static double uWPP = 0.0002;//0.68585
     public static double uWII = 0;
     public static double uWDD = 0;
-    public static double lWPP = 0.000182;//0.51587
+    public static double lWPP = 0.0002;//0.51587
     public static double lWII = 0;
     public static double lWDD = 0;
 

@@ -37,7 +37,7 @@ public class Hood extends SubsystemBase {
   private BangBangController bangL;
   private BangBangController bangU;
 
-  private double shooterTolerance = 200;
+  private double shooterTolerance = 150;
 
   private int shootFrames = 0;
 

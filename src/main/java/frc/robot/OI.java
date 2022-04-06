@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.Auton.shoot;
 //Subsystems
 import frc.robot.SubSystems.Climb;
 import frc.robot.SubSystems.Drive;
@@ -23,6 +24,7 @@ public class OI extends SubsystemBase {
     public Joystick operatorControl;
     public Lime lime;
     public MegaShooter2PointO megashooter2pointo;
+    public double shootOffset = 0;
 
     public OI() {
         // camera = Camera.get_Instance();
@@ -158,7 +160,7 @@ public class OI extends SubsystemBase {
         // System.out.println(lime.getHorOffset());
 
         if (shoot()) {
-            megashooter2pointo.shoot(Constants.edgeTarmacRPM);
+            megashooter2pointo.shoot(Constants.edgeTarmacRPM + shootOffset);
             // megashooter2pointo.shootCamera();
         } else if (shootLow()) {
             megashooter2pointo.shoot(Constants.lowGoalRPM);
@@ -228,6 +230,13 @@ public class OI extends SubsystemBase {
         if(disableAutoClimbTest()){
             megashooter2pointo.disableClimb();
         }
+
+        if(driverControl.getRawButton(5)){
+            shootOffset += 50;
+        }else if(driverControl.getRawButton(6)){
+            shootOffset -= 50;
+        }
+        SmartDashboard.putNumber("shooter + offset", Constants.edgeTarmacRPM + shootOffset);
         // TEST OI
 
         // GITHUB??????

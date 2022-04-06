@@ -88,7 +88,7 @@ public class MegaShooter2PointO extends SubsystemBase {
 
 
     if ((index.isInTransit() || (!index.getUpperPhotoeye() && index.getLowerPhotoeye()) || shooting) || overrideIndex) {
-      index.setSpeed(-0.75);
+      index.setSpeed(-1);
     } else {
       index.setSpeed(0);
     }
@@ -98,7 +98,7 @@ public class MegaShooter2PointO extends SubsystemBase {
                                                                                         // index.getUpperPhotoeye()))
       intake.setSpeed(-1);
     } else if (isIndexReversedVar) {
-      intake.setSpeed(0.8);
+      intake.setSpeed(0.6);
     } else {
       intake.setSpeed(0);
     }
@@ -125,7 +125,7 @@ public class MegaShooter2PointO extends SubsystemBase {
   }
 
   public void shootOn() {
-    if (hood.isShootReady() && shootTimer.get() > 0.5) {
+    if (hood.isShootReady() && shootTimer.get() > 0) {
       shooting = true;
     } else {
       shooting = false;
