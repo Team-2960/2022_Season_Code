@@ -10,7 +10,7 @@ public class toPosTest extends SequentialCommandGroup {
     public toPosTest() {
         Lime lime = new Lime();
         addCommands(
-                new toPos(0.9, 0, 120),
+                new toPos(0.9, 0, -225),
                 //new toPos(0, 0, 120),
                 new toPos(0.1,1,125),
                 new toPos(0.2,2.3,-90),

@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.SubSystems.*;
 import frc.robot.*;
 
-public class toPos extends CommandBase{
+public class toPosInterX extends CommandBase{
     //shoot the ball
    
     Drive drive = Drive.get_Instance();
@@ -27,7 +27,7 @@ public class toPos extends CommandBase{
     double tarTheta = 1000000;
     //x and y are relative to the starting location and time is relative to the start of the command
     //Meters and degrees are the units
-    public toPos(double x, double y, double theta){
+    public toPosInterX(double x, double y, double theta){
         this.x = x;
         this.y = y;
         this.theta = Math.toRadians(theta);
@@ -68,16 +68,16 @@ public class toPos extends CommandBase{
         tarX = x - currX;
         tarY = y - currY;
         double sanTheta = drive.properSanitize(theta, currTheta);
-        tarTheta = sanTheta - currTheta;
-        SmartDashboard.putNumber("sanitize angle", Math.toDegrees(sanTheta));
-        SmartDashboard.putNumber("angle", Math.toDegrees(theta));
+        tarTheta = theta - currTheta;
+        SmartDashboard.putNumber("sanitize angle", sanTheta);
+        SmartDashboard.putNumber("angle", theta);
         double finalVelX = 0;
         double finalVelY = 0;
         double finalOmega = 0;
 
         //SETS X VELOCITY BASED ON HOW FAR AWAY FROM THE DESIRED X COORD WE ARE
         if(Math.abs(tarX) < Constants.thresholdX1){
-            finalVelX = Constants.xVel1;
+            finalVelX = Constants.xVel2;
         }else if(Math.abs(tarX) <Constants.thresholdX2){
             finalVelX = Constants.xVel2;
         }else if(Math.abs(tarX) < Constants.thresholdX3){
@@ -97,7 +97,7 @@ public class toPos extends CommandBase{
 
         //SETS THE Y VELOCITY BASED ON HOW CLOSE WE ARE TO THE DESIRED Y COORD
         if(Math.abs(tarY) < Constants.thresholdY1){
-            finalVelY = Constants.yVel1;
+            finalVelY = Constants.yVel2;
         }else if(Math.abs(tarY) <Constants.thresholdY2){
             finalVelY = Constants.yVel2;
         }else if(Math.abs(tarY) < Constants.thresholdY3){
@@ -144,5 +144,4 @@ public class toPos extends CommandBase{
         drive.velX = 0;
         drive.velY = 0;
     }
-    
 }

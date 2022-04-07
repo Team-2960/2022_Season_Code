@@ -132,4 +132,10 @@ public class Hood extends SubsystemBase {
     return shootFrames < 3;
   }
 
+  public double setWheelWithByDistance(double distance){
+    double x = distance;
+    double rpm = 0.05996 * Math.pow(x, 3) + -17.62 * Math.pow(x, 2) + 1705.97 * x -43888.9;
+    return rpm;
+  }
+
 }

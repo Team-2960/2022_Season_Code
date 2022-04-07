@@ -206,11 +206,11 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber("er", error);
     SmartDashboard.putNumber("angle rad", currTheta);
     if(lowError < error && lowError < highError){
-      return currTheta - 2 * Math.PI;
-    }else if(highError < error){
-      return currTheta + 2 * Math.PI;
+      return tarTheta - 2 * Math.PI;
+    }else if(highError < error && highError < lowError){
+      return tarTheta + 2 * Math.PI;
     }else{
-      return currTheta;
+      return tarTheta;
     }
 
 

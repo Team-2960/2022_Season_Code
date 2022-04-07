@@ -2,6 +2,7 @@ package frc.robot.Auton;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.SubSystems.Drive;
+import frc.robot.SubSystems.Index;
 import frc.robot.SubSystems.MegaShooter2PointO;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,11 +15,16 @@ public class shoot extends CommandBase{
     private int numBalls = 0;
     private int totalBalls;
     private Timer timer;
+    private double speed;
+    private Index index;
     public shoot(int balls, double speed){
         megashooter2pointo = MegaShooter2PointO.get_Instance();
-        megashooter2pointo.setShooterRPM(speed, speed);
         totalBalls = balls;
         timer = new Timer();
+        this.speed = speed;
+        index = Index.get_Instance();
+        
+
     }
 
     @Override
@@ -26,6 +32,7 @@ public class shoot extends CommandBase{
         super.initialize();
         timer.start();
         System.out.println("shoot start");
+        megashooter2pointo.setShooterRPM(speed, speed);
     }
 
     /**
@@ -41,12 +48,13 @@ public class shoot extends CommandBase{
      */
     @Override
     public boolean isFinished() {
-        return (numBalls == totalBalls);
+        return !index.getUpperPhotoeye();//(numBalls == totalBalls);
     }
 
     @Override
     public void execute() {
         megashooter2pointo.shootOn();
+        megashooter2pointo.overrideIndexTrue();
 
         if(megashooter2pointo.fallingEdgeUpper()){
             numBalls++;
@@ -63,6 +71,6 @@ public class shoot extends CommandBase{
     public void end(boolean interrupte) {
         megashooter2pointo.shootOff();
         megashooter2pointo.setShooterRPM(0, 0);
-
+        megashooter2pointo.overrideIndexFalse();
     }
 }

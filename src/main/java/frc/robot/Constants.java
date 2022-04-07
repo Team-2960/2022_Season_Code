@@ -193,4 +193,6 @@ public class Constants{
 
     public final static double velocityToMeters = (10/8.16*Math.PI*3.9*0.0254)/(2048);
 
+    public final static double autonCamera = Math.PI/22;
+
 }

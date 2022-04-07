@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
     drive.autonInit();
     //drive.manualSpeeds(0, 1.5, 0);
     drive.breakMode();
-    autonCommand = new toPosTest();
+    autonCommand = new toPosTest2();
     if(autonCommand != null) autonCommand.schedule();
   }
 

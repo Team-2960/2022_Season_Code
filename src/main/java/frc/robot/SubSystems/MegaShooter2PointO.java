@@ -57,6 +57,8 @@ public class MegaShooter2PointO extends SubsystemBase {
 
   boolean overrideIndex = false;
 
+  double numBalls = 0;
+
   public static MegaShooter2PointO get_Instance() {
 
     if (megashooter2pointo == null) {
@@ -98,7 +100,7 @@ public class MegaShooter2PointO extends SubsystemBase {
                                                                                         // index.getUpperPhotoeye()))
       intake.setSpeed(-1);
     } else if (isIndexReversedVar) {
-      intake.setSpeed(0.6);
+      intake.setSpeed(0.8);
     } else {
       intake.setSpeed(0);
     }
@@ -506,6 +508,10 @@ public class MegaShooter2PointO extends SubsystemBase {
     // 3)){
     climb.resetWinchPos();
     // }
+    if(fallingEdgeUpper()){
+      numBalls++;
+    }
+    SmartDashboard.putNumber("ba lls", numBalls);
     hood.calcWheelSpeed();
     SmartDashboard.putNumber("pitch", drive.navX.getPitch());
     megashooter2pointo.hood.printRPM();
