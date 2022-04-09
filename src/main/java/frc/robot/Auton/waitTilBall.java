@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.*;
 
 
-public class shoot extends CommandBase{
+public class waitTilBall extends CommandBase{
 
     public  MegaShooter2PointO megashooter2pointo;
     private int numBalls = 0;
@@ -17,10 +17,8 @@ public class shoot extends CommandBase{
     private Timer timer;
     private double speed;
     private Index index;
-    public shoot(double speed){
+    public waitTilBall(){
         megashooter2pointo = MegaShooter2PointO.get_Instance();
-        timer = new Timer();
-        this.speed = speed;
         index = Index.get_Instance();
         
 
@@ -28,10 +26,6 @@ public class shoot extends CommandBase{
 
     @Override
     public void initialize() {
-        super.initialize();
-        timer.start();
-        System.out.println("shoot start");
-        megashooter2pointo.setShooterRPM(speed, speed);
     }
 
     /**
@@ -47,12 +41,12 @@ public class shoot extends CommandBase{
      */
     @Override
     public boolean isFinished() {
-        return !index.getUpperPhotoeye();//(numBalls == totalBalls);
+        return index.getUpperPhotoeye();//(numBalls == totalBalls);
     }
 
     @Override
     public void execute() {
-        megashooter2pointo.shootOn(); 
+        megashooter2pointo.indexing();
     }
 
     
@@ -61,6 +55,5 @@ public class shoot extends CommandBase{
      */
     @Override
     public void end(boolean interrupte) {
-        megashooter2pointo.shootOff();
     }
 }

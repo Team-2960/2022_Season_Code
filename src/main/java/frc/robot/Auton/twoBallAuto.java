@@ -19,7 +19,7 @@ public class twoBallAuto extends SequentialCommandGroup {
                 
                 //new conTurn(-180),
                 new camera(),
-                new shoot(2, 11500)
+                new shoot(11500)
         );
 
     }

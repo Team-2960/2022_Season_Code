@@ -91,27 +91,46 @@ public class Hood extends SubsystemBase {
     SmartDashboard.putNumber("low PID",
         lowerWheelPID.calculate(mLowerWheel.getSelectedSensorVelocity(), lowerWheelVel));
     if (!(upperWheelVel == 0 || lowerWheelVel == 0)) {
-      setSpeed(lowPower, upPower);
+      if (upperWheelVel < 9500 && lowerWheelVel < 9500) {
+        setSpeed(upperWheelFF.calculate(upperWheelVel), upperWheelFF.calculate(upperWheelVel));
+      } else {
+        setSpeed(lowPower, upPower);
+      }
     } else {
       hood.setSpeed(0, 0);
     }
   }
 
   public boolean isWheelAtVel() {
-    double low_error = Math.abs(lowerWheelVel - Math.abs(mLowerWheel.getSelectedSensorVelocity()));
-    double high_error = Math.abs(upperWheelVel - Math.abs(mUpperWheel.getSelectedSensorVelocity()));
+    if (Math.abs(lowerWheelVel) > 9500 && Math.abs(lowerWheelVel) > 9500) {
+      double low_error = Math.abs(lowerWheelVel - Math.abs(mLowerWheel.getSelectedSensorVelocity()));
+      double high_error = Math.abs(upperWheelVel - Math.abs(mUpperWheel.getSelectedSensorVelocity()));
 
-    boolean lower_limit = low_error < shooterTolerance;
-    boolean upper_limit = high_error < shooterTolerance;
+      boolean lower_limit = low_error < shooterTolerance;
+      boolean upper_limit = high_error < shooterTolerance;
 
-    SmartDashboard.putBoolean("lower limit", lower_limit);
-    SmartDashboard.putBoolean("upper limit", upper_limit);
-    
-    SmartDashboard.putNumber("lower error", low_error);
-    SmartDashboard.putNumber("upper error", high_error);
-    
+      SmartDashboard.putBoolean("lower limit", lower_limit);
+      SmartDashboard.putBoolean("upper limit", upper_limit);
 
-    return lower_limit && upper_limit;
+      SmartDashboard.putNumber("lower error", low_error);
+      SmartDashboard.putNumber("upper error", high_error);
+
+      return lower_limit && upper_limit;
+    } else {
+      double low_error = Math.abs(lowerWheelVel - Math.abs(mLowerWheel.getSelectedSensorVelocity()));
+      double high_error = Math.abs(upperWheelVel - Math.abs(mUpperWheel.getSelectedSensorVelocity()));
+
+      boolean lower_limit = low_error < 1000;
+      boolean upper_limit = high_error < 1000;
+
+      SmartDashboard.putBoolean("lower limit", lower_limit);
+      SmartDashboard.putBoolean("upper limit", upper_limit);
+
+      SmartDashboard.putNumber("lower error", low_error);
+      SmartDashboard.putNumber("upper error", high_error);
+
+      return lower_limit && upper_limit;
+    }
   }
 
   public void printRPM() {
@@ -123,18 +142,18 @@ public class Hood extends SubsystemBase {
     return (41.666666666) * distance + 7583.33;
   }
 
-  public boolean isShootReady(){
-    if(isWheelAtVel()){
+  public boolean isShootReady() {
+    if (isWheelAtVel()) {
       shootFrames = 0;
-    }else{
+    } else {
       shootFrames++;
     }
     return shootFrames < 3;
   }
 
-  public double setWheelWithByDistance(double distance){
+  public double setWheelWithByDistance(double distance) {
     double x = distance;
-    double rpm = 0.05996 * Math.pow(x, 3) + -17.62 * Math.pow(x, 2) + 1705.97 * x -43888.9;
+    double rpm = 0.05996 * Math.pow(x, 3) + -17.62 * Math.pow(x, 2) + 1705.97 * x - 43888.9;
     return rpm;
   }
 

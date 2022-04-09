@@ -15,20 +15,20 @@ public class Constants{
 
     //Shooter Constants
     public static double uWP = 0.550585/16;//0.68585
-    public static double uWI = 4.7529 * Math.pow(10, -5);
+    public static double uWI = 4.5529 * Math.pow(10, -5);
     public static double uWD = 2.1277* Math.pow(10, -6);
     public static double lWP = 0.550587/16;//0.51587
-    public static double lWI = 4.7532*Math.pow(10, -5);
+    public static double lWI = 4.5532*Math.pow(10, -5);
     public static double lWD = 2 * Math.pow(10, -6);
     public static double lowGoalRPM = 7500;
     public static double edgeTarmacRPM = 11500;
 
-    public static double uWPP = 0.0002;//0.68585
+    public static double uWPP = 0.00012;//0.68585
     public static double uWII = 0;
-    public static double uWDD = 0;
+    public static double uWDD = 0.000001;
     public static double lWPP = 0.0002;//0.51587
     public static double lWII = 0;
-    public static double lWDD = 0;
+    public static double lWDD = 0.000001;
 
     public static double uTarmacRPM = 1;
     public static double lTarmacRPM = 1;
@@ -48,9 +48,9 @@ public class Constants{
     public static double xVel2 = 0.8;
 
     public static double thresholdX3 = 1;
-    public static double xVel3 = 1.5;
+    public static double xVel3 = 2;
 
-    public static double xVelOutside = 1.7;
+    public static double xVelOutside = 2.3;
 
 
     public static double thresholdY1 = 0.03;
@@ -60,9 +60,9 @@ public class Constants{
     public static double yVel2 = 0.8;
 
     public static double thresholdY3 = 1;
-    public static double yVel3 = 1.5;
+    public static double yVel3 = 2;
 
-    public static double yVelOutside = 1.7;
+    public static double yVelOutside = 2.6;
 
 
     public static double thresholdT1 = 0.1;

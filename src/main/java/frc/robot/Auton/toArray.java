@@ -209,7 +209,7 @@ public class toArray extends CommandBase{
             drive.omega = -1 * lime.getHorOffset() * Constants.autonCamera;
         }
 
-        if (Math.abs(tarX) < Constants.xToPosTolerance && Math.abs(tarY) < Constants.yToPosTolerance && (Math.abs(tarTheta) < Constants.thetaToPosTolerance || (array[index].isCameraTracking && Math.abs(lime.getHorOffset()) < 1))){
+        if (Math.abs(tarX) < array[index].posTolerance && Math.abs(tarY) < array[index].posTolerance && (Math.abs(tarTheta) < array[index].angleTolerance || (array[index].isCameraTracking && Math.abs(lime.getHorOffset()) < 1))){
             index++;
         }
     }

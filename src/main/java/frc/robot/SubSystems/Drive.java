@@ -153,7 +153,7 @@ public class Drive extends SubsystemBase {
 
     SmartDashboard.putNumber("odo theta", m_odometry.getPoseMeters().getRotation().getDegrees());
     SmartDashboard.putNumber("Gyro Angle", navX.getYaw());
-    if(autoTimer.get() > 0.5){
+    if(autoTimer.get() > 0){
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(velY, velX, omega, Rotation2d.fromDegrees(-navX.getYaw()));
     SwerveModuleState[] moduleStates = m_kinematics.toSwerveModuleStates(speeds);
 

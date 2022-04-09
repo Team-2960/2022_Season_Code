@@ -24,7 +24,7 @@ public class threeBallAuton extends SequentialCommandGroup{
             new intakeDown(),
             new turnWithTime2(1.15, true),
             new camera(),
-            new shoot(1, 4000)
+            new shoot(4000)
 
            // new moveInDir(10, 0, 0.3)
             //new toAngle(180),
