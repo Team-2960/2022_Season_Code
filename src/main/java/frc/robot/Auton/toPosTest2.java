@@ -16,7 +16,7 @@ public class toPosTest2 extends SequentialCommandGroup {
         };
 
         autoPathPoint[] positions2 = new autoPathPoint[] {
-                new autoPathPoint(new Pose2d(0, 0, Rotation2d.fromDegrees(-225)), false, false),
+                new autoPathPoint(new Pose2d(0, 0, Rotation2d.fromDegrees(-225)), false, true),
                 new autoPathPoint(new Pose2d(0, 1.5, Rotation2d.fromDegrees(-225)), false, true, 0.1,
                         Constants.thetaToPosTolerance),
                 new autoPathPoint(new Pose2d(0, 2.4, Rotation2d.fromDegrees(-180)), false, true, 0.1,
@@ -41,20 +41,24 @@ public class toPosTest2 extends SequentialCommandGroup {
                 new ParallelRaceGroup(
                         new SequentialCommandGroup(
                                 new intakeDown(),
-                                new setShooterRPM(7000),
+                                new setShooterRPM(11500),
                                 new toArray(positions1),
-                                new shoot(7000),
-                                new setShooterRPM(7000),
+                                new shoot(11500),
+                                new setShooterRPM(0),
                                 new toArray(positions2),
-                                new shoot(7000),
+                                new setShooterRPM(11500),
+                                new shoot(11500),
                                 new waitTilBall(),
-                                new shoot(7000),
+                                new setShooterRPM(11500),
+                                new shoot(11500),
+                                new setShooterRPM(0),
                                 new toArray(positions3),
                                 new intake(0,0.5),
                                 new toArray(positions4),
-                                new shoot(7000),
+                                new setShooterRPM(11500),
+                                new shoot(11500),
                                 new waitTilBall(),
-                                new shoot(7000)),
+                                new shoot(11500)),
                         new timerCommand())
 
         );
